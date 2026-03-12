@@ -37,6 +37,7 @@ The highest priority files. Placed in `.claude/rules/`, these are automatically 
 *   **Subdirectory Context (`frontend/CLAUDE.md`):** Subdirectory rules only load when Claude interacts with files in those specific folders. This prevents irrelevant backend context from bloating your frontend session.
 *   **On-Demand Knowledge (`docs/architecture.md`):** Store deep knowledge in the `docs/` folder. Instead of loading them every session, reference them on-demand by telling Claude to look at `@docs/architecture.md`.
 *   **Custom Skills (`.claude/skills/`):** Define modular custom tools (like safe DB migration wrappers) using a `SKILL.md` file with YAML frontmatter.
+*   **Specialized Agents (`.claude/agents/`):** Define an orchestrator and subagents to route complex tasks effectively. The orchestrator acts as a traffic cop, delegating deeply technical tasks to specialized subagents (like `frontend-expert.md`) to keep the main session history lean.
 
 ---
 

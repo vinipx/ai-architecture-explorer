@@ -476,6 +476,35 @@ When the user says "migrate the database" or modifies a \`schema.prisma\` file.
                         ]
                       }
                     ]
+                  },
+                  {
+                    id: "proj-agents",
+                    name: "agents",
+                    type: "folder",
+                    info: {
+                      what: "Specialized AI roles and orchestrators.",
+                      why: "To route complex tasks correctly or focus Claude's context on deep-dive expertise without polluting the general system prompt.",
+                      how: "Markdown files defining the persona and workflows.",
+                      when: "When explicitly activated or routed to by the orchestrator."
+                    },
+                    children: [
+                      {
+                        id: "proj-agents-orchestrator",
+                        name: "orchestrator.md",
+                        badge: "Real World",
+                        type: "file",
+                        content: `# Role\nYou are the primary orchestrator agent for the Acme Corp project. Your job is to analyze the user's request and delegate to the appropriate specialized subagent.\n\n# Available Subagents\n- \`frontend-expert\`: Use for any React, Tailwind, or Vite tasks.\n- \`database-expert\`: Use for Prisma or Postgres tasks.\n\n# Instructions\n- IMPORTANT: NEVER attempt to write code yourself.\n- ALWAYS delegate using the appropriate tool or subagent call.\n- Once the subagent finishes, synthesize their response for the user.`,
+                        info: { what: "An orchestrator agent prompt.", why: "Orchestrators keep the main session history lean by delegating repetitive or highly specialized tasks. They act as strategic traffic cops.", how: "Set as the default entry agent if applicable.", when: "On general session start or explicit invocation." }
+                      },
+                      {
+                        id: "proj-agents-frontend",
+                        name: "frontend-expert.md",
+                        badge: "Real World",
+                        type: "file",
+                        content: `# Persona\nYou are an elite Staff-level Frontend Engineer specializing in Web Performance, Accessibility (a11y), and React 18 concurrent features.\n\n# Core Directives\n- NEVER suggest solutions that degrade Lighthouse performance scores.\n- ALWAYS include \`aria-labels\` for interactive elements.\n- When reviewing PRs, act as a strict but highly educational mentor.\n\n# Response Format\nYour responses MUST follow this exact structure:\n1. **Analysis:** A brief thought process analyzing the code.\n2. **Refactored Code:** The exact, drop-in ready code replacement.\n3. **Explanation:** A concise bulleted list of why you made these choices.`,
+                        info: { what: "A highly specialized Agent persona.", why: "Using specific personas guarantees predictable, expert-level outputs for specific domains.", how: "Activated on demand by the user or orchestrator.", when: "On agent activation." }
+                      }
+                    ]
                   }
                 ]
               },
