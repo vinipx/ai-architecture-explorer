@@ -1,64 +1,57 @@
-# claude-infra-setup
+# Claude Architecture Explorer
 
-This repository demonstrates the comprehensive architectural structure of the official `.claude/` setup as analyzed from the reference diagram. The structure realistically reflects both options: **Project-Level** and **User-Level**.
+An interactive, visual reference guide for the official `.claude/` directory architecture, built to help you master Claude Code's multi-level configuration system.
 
-To avoid modifying your actual home directory, the user-level structure has been simulated in the `user-level/` folder, while the project-level structure is in the `project-level/` folder.
+**[View the Live Explorer Here](https://vinipx.github.io/claude-infra-setup/)** *(Assuming GitHub Pages is configured at this URL)*
 
-## Core Components
-The architecture is built on four core components:
-1. **RULES (Always Loaded):** Global instructions and guidelines such as code style, testing, and API design.
-2. **SKILLS (On Demand):** Custom commands, references, and executable scripts designed for specific tasks.
-3. **HOOKS (Event-Driven Automation):** Automated triggers and scripts (like file protection) governed by settings.
-4. **AGENTS (Specialized Roles):** Task-specific agent profiles and their corresponding memory storage.
-`
----
+## Overview
+Claude Code orchestrates a powerful hierarchy of four memory levels, each with a specific scope and priority. When two levels contradict each other, Claude Code applies the most specific rule. 
 
-## 1. Project-Level Structure (`project-level/`)
-This structure resides within your specific project repository (e.g., `your-project/`) and is typically shared with the team via version control, with some specific exceptions.
-
-*   `CLAUDE.md` (Root level): A high-level description or entry point for Claude configuration specific to this repository. Shared in the repo.
-*   `.claude/`: The main configuration directory for project-specific Claude settings.
-    *   `CLAUDE.md`: Internal documentation or specific instructions for the `.claude` directory configuration.
-    *   `settings.json`: Project-wide settings and configurations for Claude. Shared in the repo.
-    *   `settings.local.json`: Local, user-specific overrides for project settings. **This file is gitignored** to prevent leaking personal paths, API keys, or machine-specific setup.
-    *   `rules/`: Contains Markdown files that are **Always Loaded** by Claude to provide context.
-        *   `code-style.md`: Defines coding standards, linting rules, and formatting preferences.
-        *   `testing.md`: Outlines the testing frameworks, conventions, and requirements.
-        *   `api-design.md`: Specifies rules for designing, documenting, and implementing APIs.
-    *   `skills/`: Contains **Custom Commands** and modular capabilities loaded **On Demand**.
-        *   `<skill-name>/`: A directory dedicated to a specific skill.
-            *   `SKILL.md`: The primary definition and instructions for the skill.
-            *   `reference.md`: Supplementary documentation or context required by the skill.
-            *   `examples/`: A directory containing examples of how to use the skill or expected outputs.
-            *   `scripts/helper.sh`: Executable scripts that the skill might invoke to perform complex local operations.
-    *   `agents/`: Contains configurations for **Specialized Roles**.
-        *   `<agent-name>.md`: Defines the persona, prompt, and specialized instructions for a specific agent role (e.g., `frontend-expert.md`).
-    *   `hooks/`: Contains scripts for **Event-Driven Automation**.
-        *   `protect-files.sh`: A script executed on specific events (e.g., pre-commit, file modification) to prevent accidental changes to sensitive files.
-    *   `commands/`: A directory for legacy commands, kept for backward compatibility.
-
-### Why & When to use Project-Level?
-**Why:** To ensure everyone working on the project shares the same rules, skills, and agents, leading to consistent AI behavior across the team.
-**When:** You should define these files when setting up a new repository, whenever team conventions change, or when you build a tool/script that benefits the entire project.
+This repository provides a visual, interactive IDE-like interface (built in a single HTML file with Vue and Tailwind CSS) that allows you to click through both the global user-level and project-level directories. It explains what each file does, why it exists, and provides **Real World** templates following Anthropic's prompt engineering best practices (ruthless pruning, Markdown headings, and emphasis words).
 
 ---
 
-## 2. User-Level Structure (`user-level/`)
-This structure corresponds to the global configuration located in the user's home directory (e.g., `~/.claude/`). It defines personal setups, preferences, and cross-project memory.
+## The 4 Levels of Claude Configuration
 
-*   `CLAUDE.md`: Global personal instructions and setup details for Claude (Personal Setup).
-*   `settings.json`: Global user settings that apply across all projects unless overridden by project-level settings.
-*   `rules/`: Global rules applied to all projects the user works on (e.g., "Always use Vim keybindings in code examples").
-*   `skills/`: Global skills available across all projects.
-    *   `<skill-name>/SKILL.md`: Definition of a globally available skill (e.g., a script to deploy to your personal server).
-*   `agents/`: Globally available specialized agent personas.
-    *   `<agent-name>.md`: Definition of a globally available agent you prefer to use everywhere.
-*   `projects/`: Directory managing data and memory for specific projects.
-    *   `<project-hash>/`: A uniquely hashed directory corresponding to a specific local project workspace.
-        *   `memory/`: Contains auto-generated contextual memory for the specific project.
-            *   `MEMORY.md`: Core memory file tracking overarching project goals, progress, and past context.
-            *   `topic-files.md`: Automatically generated memory tracking specific topics, architectural decisions, or sub-systems (**Auto-Memory**).
+### Level 1: Global (Your Machine)
+**`~/.claude/CLAUDE.md`**
+Global preferences across ALL your projects. This is specific to your machine and not versioned. Configure your personal preferences here: communication style, preferred tools, and OS specifics.
 
-### Why & When to use User-Level?
-**Why:** To maintain your personal preferences, tools, and continuity across multiple disparate projects without imposing those preferences on your team members.
-**When:** You should define these files when you have workflows, personal scripts, or specific AI prompt styles you want to carry with you regardless of the repository you are currently working in. Auto-Memory generates naturally over time as you work.
+### Level 2: Auto-Memory
+**`~/.claude/projects/*/MEMORY.md`**
+Written by Claude itself! Unlike `CLAUDE.md` which you write manually, `MEMORY.md` is fed by the agent over the course of your sessions. It tracks discovered build commands, debugging insights, and active project context.
+
+### Level 3: Project
+**`your-project/CLAUDE.md`**
+The most strategic file. It lives at the root of your Git repository and is shared with the entire team via version control. Keep it ruthlessly pruned (80-200 lines max) and place core code conventions, project architecture, and primary build commands here.
+*Note: You can use `CLAUDE.local.md` (Level 3b) for gitignored personal overrides.*
+
+### Level 4: Modular Rules
+**`your-project/.claude/rules/*.md`**
+The highest priority files. Placed in `.claude/rules/`, these are automatically loaded alongside `CLAUDE.md`. This allows separation of concerns: one file for coding style, one for testing directives, one for Git workflows. When levels conflict, these specific rules win.
+
+---
+
+## Other Key Features Demonstrated
+
+*   **Subdirectory Context (`frontend/CLAUDE.md`):** Subdirectory rules only load when Claude interacts with files in those specific folders. This prevents irrelevant backend context from bloating your frontend session.
+*   **On-Demand Knowledge (`docs/architecture.md`):** Store deep knowledge in the `docs/` folder. Instead of loading them every session, reference them on-demand by telling Claude to look at `@docs/architecture.md`.
+*   **Custom Skills (`.claude/skills/`):** Define modular custom tools (like safe DB migration wrappers) using a `SKILL.md` file with YAML frontmatter.
+
+---
+
+## Local Development
+
+If you want to view or modify the interactive explorer locally:
+
+1. Clone the repository.
+2. Run the included convenience script to spin up a local server:
+   ```bash
+   ./docs.sh
+   ```
+3. Your browser will automatically open `http://localhost:8080/`.
+
+---
+
+## Acknowledgments
+A special thank you to **Navdeep Singh Rathore** ([LinkedIn](https://www.linkedin.com/in/thenavdeeprathore/)), whose insights and original architectural breakdown inspired the creation of this interactive reference site.
