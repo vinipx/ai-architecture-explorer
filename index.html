@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Architecture Explorer</title>
+    
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            console.error(error);
+            document.write('<div style="color:red; padding:20px; font-family:monospace; background:white; z-index:9999; position:fixed; top:0; left:0; width:100%; height:100%;">');
+            document.write('<h2>Application Error</h2>');
+            document.write('<p>' + message + '</p>');
+            document.write('<p>Line: ' + lineno + '</p>');
+            document.write('</div>');
+        };
+    </script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+        }
+        
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        [v-cloak] { display: none !important; }
+
+        /* CSS Variables - Light Theme (Default shadcn) */
+        :root {
+          --background: 0 0% 100%;
+          --foreground: 222.2 84% 4.9%;
+          --muted: 210 40% 96.1%;
+          --muted-foreground: 215.4 16.3% 46.9%;
+          --popover: 0 0% 100%;
+          --popover-foreground: 222.2 84% 4.9%;
+          --card: 0 0% 100%;
+          --card-foreground: 222.2 84% 4.9%;
+          --border: 214.3 31.8% 91.4%;
+          --input: 214.3 31.8% 91.4%;
+          --primary: 222.2 47.4% 11.2%;
+          --primary-foreground: 210 40% 98%;
+          --secondary: 210 40% 96.1%;
+          --secondary-foreground: 222.2 47.4% 11.2%;
+          --accent: 210 40% 96.1%;
+          --accent-foreground: 222.2 47.4% 11.2%;
+          --destructive: 0 84.2% 60.2%;
+          --destructive-foreground: 210 40% 98%;
+          --ring: 215 20.2% 65.1%;
+          --radius: 0.5rem;
+        }
+
+        /* CSS Variables - Dark Theme (neutral grays) */
+        .dark {
+          --background: 0 0% 9%;
+          --foreground: 0 0% 98%;
+          --muted: 0 0% 15%;
+          --muted-foreground: 0 0% 63%;
+          --popover: 0 0% 9%;
+          --popover-foreground: 0 0% 98%;
+          --card: 0 0% 9%;
+          --card-foreground: 0 0% 98%;
+          --border: 0 0% 15%;
+          --input: 0 0% 15%;
+          --primary: 0 0% 98%;
+          --primary-foreground: 0 0% 9%;
+          --secondary: 0 0% 15%;
+          --secondary-foreground: 0 0% 98%;
+          --accent: 0 0% 15%;
+          --accent-foreground: 0 0% 98%;
+          --destructive: 0 62.8% 30.6%;
+          --destructive-foreground: 0 0% 98%;
+          --ring: 0 0% 83.9%;
+        }
+        
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground)); }
+
+        .terminal-bg {
+            background-color: #000000;
+        }
+        .dark .terminal-bg {
+            background-color: #000000;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+          darkMode: 'class',
+          theme: {
+            extend: {
+              colors: {
+                border: "hsl(var(--border))",
+                input: "hsl(var(--input))",
+                ring: "hsl(var(--ring))",
+                background: "hsl(var(--background))",
+                foreground: "hsl(var(--foreground))",
+                primary: { DEFAULT: "hsl(var(--primary))", foreground: "hsl(var(--primary-foreground))" },
+                secondary: { DEFAULT: "hsl(var(--secondary))", foreground: "hsl(var(--secondary-foreground))" },
+                destructive: { DEFAULT: "hsl(var(--destructive))", foreground: "hsl(var(--destructive-foreground))" },
+                muted: { DEFAULT: "hsl(var(--muted))", foreground: "hsl(var(--muted-foreground))" },
+                accent: { DEFAULT: "hsl(var(--accent))", foreground: "hsl(var(--accent-foreground))" },
+                popover: { DEFAULT: "hsl(var(--popover))", foreground: "hsl(var(--popover-foreground))" },
+                card: { DEFAULT: "hsl(var(--card))", foreground: "hsl(var(--card-foreground))" },
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-background text-foreground h-screen w-screen transition-colors duration-200">
+    
+    <div id="app" v-cloak class="h-full w-full flex flex-col bg-background overflow-hidden">
+        
+        <!-- Header -->
+        <header class="h-14 border-b border-border flex items-center px-6 bg-card shrink-0 shadow-sm z-10 transition-colors duration-200">
+            <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-orange-500 fill-orange-500/20"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
+                <h1 class="font-semibold text-lg tracking-tight">Claude Architecture Explorer</h1>
+            </div>
+            
+            <div class="ml-auto flex items-center gap-4">
+                <div class="text-sm text-muted-foreground hidden sm:block">
+                    Interactive Reference Guide
+                </div>
+                
+                <button 
+                    @click="toggleTheme" 
+                    class="p-2 rounded-md hover:bg-accent text-muted-foreground hover:text-accent-foreground transition-colors border border-transparent hover:border-border"
+                    title="Toggle Theme"
+                >
+                    <svg v-if="isDark" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <div class="flex flex-1 overflow-hidden">
+            
+            <!-- Sidebar (File Tree) -->
+            <aside class="w-80 border-r border-border bg-card/50 flex flex-col shrink-0 transition-colors duration-200">
+                <div class="p-3 border-b border-border bg-muted/30 shrink-0">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Repository Structure</h2>
+                </div>
+                <div class="flex-1 overflow-y-auto p-2">
+                    <file-tree-node 
+                        v-for="node in fileSystem" 
+                        :key="node.id" 
+                        :node="node" 
+                        :level="0"
+                        :selected-id="selectedNode ? selectedNode.id : null"
+                        @select="selectedNode = $event"
+                        @hover="hoveredNode = $event"
+                    ></file-tree-node>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <main class="flex-1 flex flex-col min-w-0 bg-background overflow-hidden relative transition-colors duration-200">
+                
+                <template v-if="displayNode">
+                    <!-- Info Header Area -->
+                    <div class="shrink-0 p-6 pb-2">
+                        <div class="mb-4">
+                            <h2 class="text-2xl font-bold text-foreground flex items-center gap-2">
+                                <svg v-if="displayNode.type === 'folder'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-orange-500 fill-orange-500/20"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
+                                <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-slate-400"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                
+                                {{ displayNode.name }}
+                                
+                                <span v-if="displayNode.badge" :class="['text-xs font-bold uppercase tracking-wider px-2 py-1 rounded border align-middle ml-2', displayNode.badge === 'Real World' ? 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20' : 'bg-secondary text-secondary-foreground border-border']">
+                                    {{ displayNode.badge }}
+                                </span>
+                            </h2>
+                            <p class="text-sm text-muted-foreground mt-1 flex items-center gap-1.5">
+                                <span :class="['w-2 h-2 rounded-full', hoveredNode ? 'bg-amber-500 animate-pulse' : 'bg-green-500']"></span>
+                                {{ hoveredNode ? 'Previewing hover details' : 'Selected' }}
+                            </p>
+                        </div>
+
+                        <!-- Documentation Card -->
+                        <div v-if="displayNode.info" class="bg-card border border-border rounded-xl shadow-sm overflow-hidden animate-in fade-in zoom-in-95 duration-200 transition-colors flex-shrink-0 mb-4">
+                            <div class="bg-muted px-4 py-3 border-b border-border flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-foreground"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                                <h3 class="font-semibold text-sm text-foreground">Documentation Details</h3>
+                            </div>
+                            <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">What is it?</h4>
+                                    <p class="text-sm text-foreground leading-relaxed">{{ displayNode.info.what }}</p>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">Why is it required?</h4>
+                                    <p class="text-sm text-foreground leading-relaxed">{{ displayNode.info.why }}</p>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">How to use it?</h4>
+                                    <p class="text-sm text-foreground leading-relaxed">{{ displayNode.info.how }}</p>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">When is it loaded?</h4>
+                                    <p class="text-sm text-foreground leading-relaxed">{{ displayNode.info.when }}</p>
+                                </div>
+                            </div>
+                            <div v-if="displayNode.info.priority" class="p-4 pt-0">
+                                <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-md p-3">
+                                    <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-500 mb-1 flex items-center gap-1.5">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                                        Priority Level
+                                    </h4>
+                                    <p class="text-sm text-foreground leading-relaxed">{{ displayNode.info.priority }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- File Content Area -->
+                    <div v-if="displayNode.type === 'file'" class="flex-1 p-6 pt-0 min-h-0 flex flex-col">
+                        <div class="flex items-center justify-between mb-2 shrink-0">
+                            <h3 class="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                                File Content
+                            </h3>
+                        </div>
+                        <div class="flex-1 border border-border rounded-xl terminal-bg overflow-hidden shadow-inner flex transition-colors duration-200">
+                            <pre class="flex-1 p-4 overflow-auto text-sm font-mono text-slate-300 leading-relaxed whitespace-pre-wrap">{{ displayNode.content || "// No content available for this file." }}</pre>
+                        </div>
+                    </div>
+                    
+                    <!-- Folder Empty State -->
+                    <div v-else class="flex-1 p-6 pt-4 flex items-center justify-center">
+                        <div class="text-center text-muted-foreground">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-16 h-16 mx-auto mb-4 opacity-20"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
+                            <p class="text-lg font-medium text-foreground">Select a file to view its contents</p>
+                            <p class="text-sm mt-1">Folders only contain structural metadata.</p>
+                        </div>
+                    </div>
+                </template>
+                
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const fileSystemData = [
+          {
+            id: "user",
+            name: "user-level (~/.claude/)",
+            type: "folder",
+            info: {
+              what: "Global machine-level configuration directory.",
+              why: "Stores your personal preferences and cross-project auto-memory.",
+              how: "Located in your operating system's home directory.",
+              when: "Global settings are loaded first. Memory is loaded per project."
+            },
+            children: [
+              {
+                id: "user-claude-md",
+                name: "CLAUDE.md",
+                badge: "Level 1: Global",
+                type: "file",
+                content: `# Personal Preferences\n- OS: macOS Sonoma\n- Shell: zsh with oh-my-zsh\n- Editor: Cursor\n\n# Communication Style\n- IMPORTANT: Skip pleasantries, apologies, and robotic confirmations.\n- If a command fails, automatically attempt to diagnose the error reading the stderr output before asking me what to do.\n- Keep explanations strictly technical.`,
+                info: {
+                  what: "Global preferences across ALL your projects.",
+                  why: "Sets your personal boundaries and environment facts globally. This is specific to your machine and not versioned.",
+                  how: "Use concise Markdown to list your preferences.",
+                  when: "Always applied to the system prompt across all projects.",
+                  priority: "Level 1 (Global): Lowest priority. This acts as the baseline but will be overridden by any conflicting rules in Level 2, 3, or 4."
+                }
+              },
+              {
+                id: "user-projects",
+                name: "projects",
+                type: "folder",
+                info: {
+                  what: "Directory for project-specific data managed globally.",
+                  why: "To store memory and auto-generated context without polluting the local repository.",
+                  how: "Contains folders named after project hashes.",
+                  when: "Accessed when working within the corresponding project."
+                },
+                children: [
+                  {
+                    id: "user-projects-hash",
+                    name: "<project-hash>",
+                    type: "folder",
+                    info: {
+                      what: "A specific project's workspace data.",
+                      why: "To isolate memory between different codebases.",
+                      how: "Folder named with a unique hash of the project path.",
+                      when: "When working in this specific project."
+                    },
+                    children: [
+                      {
+                        id: "user-projects-memory-core",
+                        name: "MEMORY.md",
+                        badge: "Level 2: Auto-memory",
+                        type: "file",
+                        content: `# Project State\n\n## Discovered Build Commands\n- Next.js requires \`pnpm run build\` before deploying.\n\n## Debugging Insights\n- The project uses Edge runtime on Vercel, so we cannot rely on Node.js specific crypto modules in middleware.\n\n## Active Context\n- Currently migrating authentication from legacy JWTs to NextAuth.js v5 (Auth.js).`,
+                        info: { 
+                          what: "Auto Memory file written by Claude itself.", 
+                          why: "Fed by the agent over the course of your sessions to remember build commands, debugging insights, and your preferences.", 
+                          how: "Managed automatically by Claude.", 
+                          when: "Always loaded when in the project.",
+                          priority: "Level 2 (Auto-Memory): Overrides global Level 1 settings, but is overridden by explicit project instructions (Levels 3 & 4)."
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: "proj",
+            name: "project-level (your-project/)",
+            type: "folder",
+            info: {
+              what: "Project-level configuration directory.",
+              why: "Ensures everyone on the project shares the same AI rules.",
+              how: "Created in the root of your project repository. Shared via version control.",
+              when: "Automatically loaded by Claude whenever you are working inside this specific project workspace."
+            },
+            children: [
+              {
+                id: "proj-claude-md",
+                name: "CLAUDE.md",
+                badge: "Level 3: Project",
+                type: "file",
+                content: `# Project Context\nThis is the "Acme Corp Billing Dashboard" frontend repository.\n- Primary stack: React 18, TypeScript, TailwindCSS, Vite.\n- Package Manager: pnpm (strictly enforced).\n\n# Code Conventions\n- We use functional components.\n- Never use default exports.\n\n# Build Commands\n- Dev: \`pnpm dev\`\n- Test: \`pnpm test\`\n- Build: \`pnpm build\``,
+                info: {
+                  what: "The most strategic file. Shared with the entire team.",
+                  why: "Place code conventions, project architecture, and build commands here.",
+                  how: "Keep it ruthlessly pruned and scannable. Target 80–200 lines max.",
+                  when: "Always available as the primary context layer.",
+                  priority: "Level 3 (Project): High priority. Overrides Level 1 and 2. Defines the shared baseline for the repository."
+                }
+              },
+              {
+                id: "proj-claude-local-md",
+                name: "CLAUDE.local.md",
+                badge: "Level 3b: Overrides",
+                type: "file",
+                content: `# Local Environment Overrides\n- Local DB path: \`/Users/dev/acme/db.sqlite\`\n- Dev server port is mapped to \`3001\` instead of \`3000\` on my machine.\n\n# Personal Workflow\n- Always run \`pnpm lint:fix\` before completing a task.`,
+                info: {
+                  what: "Personal project overrides.",
+                  why: "Used for instructions or personal environment variables that shouldn't be shared with the team.",
+                  how: "Add it to .gitignore.",
+                  when: "Loaded and overrides project-level CLAUDE.md rules.",
+                  priority: "Level 3b (Overrides): Higher priority than Level 3. Your personal rules here will override the shared project rules."
+                }
+              },
+              {
+                id: "proj-dot-claude",
+                name: ".claude",
+                type: "folder",
+                info: {
+                  what: "Internal configuration directory for specific rules.",
+                  why: "Allows separation of concerns for rules without bloating the root directory.",
+                  how: "Contains the `rules/` subfolder.",
+                  when: "Loaded automatically."
+                },
+                children: [
+                  {
+                    id: "proj-rules",
+                    name: "rules",
+                    type: "folder",
+                    info: {
+                      what: "Directory for Modular rules.",
+                      why: "To keep CLAUDE.md ruthlessly pruned by moving specific concerns into separate files.",
+                      how: "Add Markdown files containing specific instructions.",
+                      when: "Automatically loaded alongside CLAUDE.md."
+                    },
+                    children: [
+                      {
+                        id: "proj-rules-coding-style",
+                        name: "coding-style.md",
+                        badge: "Level 4: Modular",
+                        type: "file",
+                        content: `# Coding Style\n1. ALWAYS use functional components with \`React.FC\`.\n2. State management MUST use Zustand, never Redux.\n3. CSS is handled via Tailwind. Do not create \`.css\` files unless strictly necessary.\n\n# Good Example\n\`\`\`tsx\nexport const Button = ({ label }: { label: string }) => {\n  return <button className="bg-blue-500 px-4 py-2">{label}</button>\n};\n\`\`\``,
+                        info: { what: "Modular rule for coding style.", why: "Separates code styling from general project architecture.", how: "Short, scannable markdown.", when: "Automatically loaded.", priority: "Level 4 (Modular): HIGHEST PRIORITY. Rules defined here override all broader configurations (Levels 1-3). When levels conflict, the most specific rule wins." }
+                      },
+                      {
+                        id: "proj-rules-testing",
+                        name: "testing.md",
+                        badge: "Level 4: Modular",
+                        type: "file",
+                        content: `# Testing Directives\n1. YOU MUST ensure all new hooks have a corresponding \`.test.ts\` file.\n2. NEVER use snapshots unless testing complex SVG outputs.\n3. Mock all external API calls using MSW (Mock Service Worker).`,
+                        info: { what: "Modular rule for testing.", why: "Ensures AI writes tests that pass CI/CD.", how: "Short, scannable markdown.", when: "Automatically loaded.", priority: "Level 4 (Modular): HIGHEST PRIORITY. Rules defined here override all broader configurations (Levels 1-3). When levels conflict, the most specific rule wins." }
+                      },
+                      {
+                        id: "proj-rules-git",
+                        name: "git-workflow.md",
+                        badge: "Level 4: Modular",
+                        type: "file",
+                        content: `# Git Workflow\n- IMPORTANT: Branch names MUST follow the pattern \`feature/ticket-ID-description\`.\n- Commit messages MUST use Conventional Commits.\n- NEVER push directly to \`main\`.`,
+                        info: { what: "Modular rule for Git operations.", why: "Guides Claude when executing git commands or writing commit messages.", how: "Short markdown list.", when: "Automatically loaded.", priority: "Level 4 (Modular): HIGHEST PRIORITY. Rules defined here override all broader configurations (Levels 1-3). When levels conflict, the most specific rule wins." }
+                      },
+                      {
+                        id: "proj-rules-security",
+                        name: "security.md",
+                        badge: "Level 4: Modular",
+                        type: "file",
+                        content: `# Security Mandates\n- IMPORTANT: NEVER hardcode API keys or secrets in source files.\n- ALWAYS use \`process.env\` to reference secrets.\n- Sanitize all user inputs before rendering to prevent XSS.`,
+                        info: { what: "Modular rule for security.", why: "Enforces strict security protocols.", how: "Use strong emphasis words like NEVER and ALWAYS.", when: "Automatically loaded.", priority: "Level 4 (Modular): HIGHEST PRIORITY. Rules defined here override all broader configurations (Levels 1-3). When levels conflict, the most specific rule wins." }
+                      }
+                    ]
+                  },
+                  {
+                    id: "proj-skills",
+                    name: "skills",
+                    type: "folder",
+                    info: {
+                      what: "Directory for custom capabilities and tools.",
+                      why: "To give Claude custom tools to interact with your specific environment or build system.",
+                      how: "Organized in subfolders per skill.",
+                      when: "Loaded and executed ONLY when Claude determines the skill is needed."
+                    },
+                    children: [
+                      {
+                        id: "proj-skills-db",
+                        name: "db-migration",
+                        type: "folder",
+                        info: { what: "A real-world skill for database migrations.", why: "Allows Claude to run prisma migrations autonomously.", how: "Follows the SKILL.md specification.", when: "On demand." },
+                        children: [
+                          {
+                            id: "proj-skills-db-skill",
+                            name: "SKILL.md",
+                            badge: "Tool",
+                            type: "file",
+                            content: `---
+name: db-migration
+description: Safely generates and applies Prisma database migrations. Use this when the user asks to update the database schema.
+---
+
+# Trigger
+When the user says "migrate the database" or modifies a \`schema.prisma\` file.
+
+# Execution Steps
+1. Validate the schema formatting by running \`pnpm prisma format\`.
+2. Generate the migration by running \`scripts/generate-migration.sh <migration_name>\`.
+3. Read the generated SQL file and explain what will change to the user.`,
+                            info: { what: "The primary skill definition.", why: "Instructs Claude on what the tool does and exactly what steps to take. Uses YAML frontmatter as required for tools.", how: "Markdown file defining triggers.", when: "Read when matching user intent." }
+                          },
+                          {
+                            id: "proj-skills-db-scripts",
+                            name: "scripts",
+                            type: "folder",
+                            info: { what: "Executable scripts for the skill.", why: "To perform complex or multi-step shell operations reliably.", how: "Bash, Python, or Node scripts.", when: "Executed by Claude during skill use." },
+                            children: [
+                              {
+                                id: "proj-skills-db-helper",
+                                name: "generate-migration.sh",
+                                badge: "Executable",
+                                type: "file",
+                                content: `#!/bin/bash\n# Real world migration wrapper script\nMIGRATION_NAME=$1\n\nif [ -z "$MIGRATION_NAME" ]; then\n  echo "Error: Migration name required."\n  exit 1\nfi\n\necho "Running prisma migrate dev..."\npnpm prisma migrate dev --name "$MIGRATION_NAME"`,
+                                info: { what: "An executable bash script.", why: "Encapsulates automation logic securely.", how: "Executed via shell command.", when: "During skill execution." }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: "proj-docs",
+                name: "docs",
+                type: "folder",
+                info: {
+                  what: "Knowledge base directory.",
+                  why: "To store knowledge that shouldn't bloat the session context globally.",
+                  how: "Write markdown files and reference them on-demand with `@docs/filename.md`.",
+                  when: "Loaded ONLY when referenced on-demand by you or the AI."
+                },
+                children: [
+                  {
+                    id: "proj-docs-architecture",
+                    name: "architecture.md",
+                    badge: "On-demand",
+                    type: "file",
+                    content: `# System Architecture\n\n## Backend Services\n- Authentication: NextAuth.js\n- Database: PostgreSQL hosted on Supabase\n- Cache: Upstash Redis\n\n## State Management\nWe use React Query for server state and Zustand for local client state.`,
+                    info: { what: "Deep architectural knowledge.", why: "Too specific to load every session, but useful when building new features.", how: "Reference via @docs/architecture.md", when: "On-demand." }
+                  },
+                  {
+                    id: "proj-docs-api",
+                    name: "api-patterns.md",
+                    badge: "On-demand",
+                    type: "file",
+                    content: `# API Patterns\n\n## Checklist for new endpoints\n- [ ] Validated input using Zod.\n- [ ] Wrapped in error handler middleware.\n- [ ] Returns \`{ data: ... }\` envelope on success.`,
+                    info: { what: "Pattern reference and checklists.", why: "You can use markdown's checkboxes [ ] to keep track of what's done.", how: "Reference via @docs/api-patterns.md", when: "On-demand." }
+                  }
+                ]
+              },
+              {
+                id: "proj-frontend",
+                name: "frontend",
+                type: "folder",
+                info: { what: "Frontend subdirectory.", why: "Contains code specific to the frontend.", how: "Standard directory.", when: "N/A" },
+                children: [
+                  {
+                    id: "proj-frontend-claude",
+                    name: "CLAUDE.md",
+                    badge: "Lazy Loaded",
+                    type: "file",
+                    content: `# Frontend Specifics\n- We use \`next/image\` for all images.\n- Tailwind is the only permitted styling solution.\n- All components must be exported from \`src/components/index.ts\`.`,
+                    info: { 
+                      what: "Subdirectory CLAUDE.md", 
+                      why: "Prevents irrelevant context from bloating your session. Siblings never load (backend/CLAUDE.md won't load here).", 
+                      how: "Place in the subdirectory root.", 
+                      when: "Only loads when you interact with files in this subdirectory." 
+                    }
+                  }
+                ]
+              },
+              {
+                id: "proj-backend",
+                name: "backend",
+                type: "folder",
+                info: { what: "Backend subdirectory.", why: "Contains code specific to the backend.", how: "Standard directory.", when: "N/A" },
+                children: [
+                  {
+                    id: "proj-backend-claude",
+                    name: "CLAUDE.md",
+                    badge: "Lazy Loaded",
+                    type: "file",
+                    content: `# Backend Specifics\n- Database ORM: Prisma.\n- NEVER bypass the Prisma client for DB operations.\n- All routes must be protected by the \`requireAuth\` middleware.`,
+                    info: { 
+                      what: "Subdirectory CLAUDE.md", 
+                      why: "Prevents irrelevant context from bloating your session.", 
+                      how: "Place in the subdirectory root.", 
+                      when: "Only loads when you interact with files in this subdirectory." 
+                    }
+                  }
+                ]
+              },
+              {
+                id: "proj-api",
+                name: "api",
+                type: "folder",
+                info: { what: "API subdirectory.", why: "Contains code specific to API definitions.", how: "Standard directory.", when: "N/A" },
+                children: [
+                  {
+                    id: "proj-api-claude",
+                    name: "CLAUDE.md",
+                    badge: "Lazy Loaded",
+                    type: "file",
+                    content: `# API Contract Rules\n- Always update the OpenAPI spec when adding new endpoints.\n- Use HTTP status code 422 for validation errors.`,
+                    info: { 
+                      what: "Subdirectory CLAUDE.md", 
+                      why: "Prevents irrelevant context from bloating your session.", 
+                      how: "Place in the subdirectory root.", 
+                      when: "Only loads when you interact with files in this subdirectory." 
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ];
+
+        const app = Vue.createApp({
+            data() {
+                return {
+                    fileSystem: fileSystemData,
+                    selectedNode: null,
+                    hoveredNode: null,
+                    isDark: true
+                }
+            },
+            computed: {
+                displayNode() {
+                    return this.hoveredNode || this.selectedNode || this.fileSystem[0];
+                }
+            },
+            methods: {
+                toggleTheme() {
+                    this.isDark = !this.isDark;
+                    if (this.isDark) {
+                        document.documentElement.classList.add('dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                    }
+                }
+            },
+            mounted() {
+                if (this.fileSystem[0] && this.fileSystem[0].children) {
+                    const firstFile = this.fileSystem[0].children.find(c => c.type === 'file');
+                    this.selectedNode = firstFile || this.fileSystem[0];
+                }
+                
+                if (this.isDark) {
+                    document.documentElement.classList.add('dark');
+                }
+            }
+        });
+
+        app.component('file-tree-node', {
+            name: 'FileTreeNode',
+            props: ['node', 'level', 'selectedId'],
+            emits: ['select', 'hover'],
+            data() {
+                return {
+                    isOpen: this.level < 2
+                }
+            },
+            template: `
+                <div class="select-none">
+                    <div 
+                        :class="['flex items-center py-1.5 px-2 rounded-md cursor-pointer text-sm transition-colors', selectedId === node.id ? 'bg-accent text-accent-foreground font-medium' : 'hover:bg-muted text-muted-foreground']"
+                        :style="{ paddingLeft: (level * 1.5 + 0.5) + 'rem' }"
+                        @click.stop="handleClick"
+                        @mouseenter="$emit('hover', node)"
+                        @mouseleave="$emit('hover', null)"
+                    >
+                        <div class="w-4 h-4 mr-1.5 flex items-center justify-center">
+                            <template v-if="node.type === 'folder'">
+                                <svg v-if="isOpen" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 opacity-70"><polyline points="6 9 12 15 18 9"/></svg>
+                                <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 opacity-70"><polyline points="9 18 15 12 9 6"/></svg>
+                            </template>
+                        </div>
+                        
+                        <div class="mr-2 flex items-center justify-center">
+                            <template v-if="node.type === 'folder'">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-orange-500 fill-orange-500/20"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
+                            </template>
+                            <template v-else>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :class="['w-4 h-4', selectedId === node.id ? 'text-accent-foreground' : 'text-slate-400']"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            </template>
+                        </div>
+                        
+                        <span class="truncate flex-1">{{ node.name }}</span>
+                        
+                        <span v-if="node.badge" :title="getBadgeTooltip(node.badge)" :class="['ml-2 text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded border opacity-80 whitespace-nowrap', node.badge.includes('Level') ? 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20 cursor-help' : 'bg-secondary text-secondary-foreground border-border']">
+                            {{ node.badge }}
+                        </span>
+                    </div>
+
+                    <div v-if="node.type === 'folder' && isOpen && node.children">
+                        <file-tree-node 
+                            v-for="child in node.children" 
+                            :key="child.id" 
+                            :node="child" 
+                            :level="level + 1" 
+                            :selected-id="selectedId"
+                            @select="$emit('select', $event)"
+                            @hover="$emit('hover', $event)"
+                        />
+                    </div>
+                </div>
+            `,
+            methods: {
+                handleClick() {
+                    if (this.node.type === 'folder') {
+                        this.isOpen = !this.isOpen;
+                    }
+                    this.$emit('select', this.node);
+                },
+                getBadgeTooltip(badge) {
+                    if (!badge) return '';
+                    if (badge.includes('Level 1')) return 'Level 1: Global scope. Lowest priority. Applies to all projects.';
+                    if (badge.includes('Level 2')) return 'Level 2: Auto-memory. Written by Claude. Overrides Level 1.';
+                    if (badge.includes('Level 3:')) return 'Level 3: Project scope. Shared via Git. Overrides Levels 1 & 2.';
+                    if (badge.includes('Level 3b')) return 'Level 3b: Personal project overrides. Gitignored. Overrides Level 3.';
+                    if (badge.includes('Level 4')) return 'Level 4: Modular rules. Highest priority. Overrides all broader levels.';
+                    return '';
+                }
+            }
+        });
+
+        app.mount('#app');
+    </script>
+</body>
+</html>
