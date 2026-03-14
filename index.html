@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Claude Architecture Explorer</title>
+    <title>AI Architecture Explorer</title>
     
     <script>
         window.onerror = function(message, source, lineno, colno, error) {
@@ -128,14 +128,101 @@
     <div id="app" v-cloak class="h-full w-full flex flex-col bg-background overflow-hidden">
         
         <!-- Header -->
-        <header class="h-14 border-b border-border flex items-center px-6 bg-card shrink-0 shadow-sm z-10 transition-colors duration-200">
-            <div class="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-orange-500 fill-orange-500/20"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
-                <h1 class="font-semibold text-lg tracking-tight">Claude Architecture Explorer</h1>
+        <header class="h-16 border-b border-border flex items-center px-6 bg-card shrink-0 shadow-sm z-10 transition-colors duration-200 relative">
+            <div class="flex items-center gap-2 z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" :class="['w-6 h-6', !selectedProvider ? 'text-muted-foreground' : (selectedProvider === 'gemini' ? 'text-blue-500' : (selectedProvider === 'cursor' ? 'text-slate-400' : (selectedProvider === 'copilot' ? 'text-indigo-400' : (selectedProvider === 'aider' ? 'text-emerald-500' : 'text-orange-500'))))]">
+    <circle v-if="!selectedProvider" cx="12" cy="12" r="10"/><path v-if="!selectedProvider" d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path v-if="!selectedProvider" d="M12 17h.01"/>
+    <path v-else-if="selectedProvider === 'gemini'" d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81" fill="currentColor" />
+    <path v-else-if="selectedProvider === 'cursor'" d="M11.503.131 1.891 5.678a.84.84 0 0 0-.42.726v11.188c0 .3.162.575.42.724l9.609 5.55a1 1 0 0 0 .998 0l9.61-5.55a.84.84 0 0 0 .42-.724V6.404a.84.84 0 0 0-.42-.726L12.497.131a1.01 1.01 0 0 0-.996 0M2.657 6.338h18.55c.263 0 .43.287.297.515L12.23 22.918c-.062.107-.229.064-.229-.06V12.335a.59.59 0 0 0-.295-.51l-9.11-5.257c-.109-.063-.064-.23.061-.23" fill="currentColor" />
+    <path v-else-if="selectedProvider === 'copilot'" d="M23.922 16.997C23.061 18.492 18.063 22.02 12 22.02 5.937 22.02.939 18.492.078 16.997A.641.641 0 0 1 0 16.741v-2.869a.883.883 0 0 1 .053-.22c.372-.935 1.347-2.292 2.605-2.656.167-.429.414-1.055.644-1.517a10.098 10.098 0 0 1-.052-1.086c0-1.331.282-2.499 1.132-3.368.397-.406.89-.717 1.474-.952C7.255 2.937 9.248 1.98 11.978 1.98c2.731 0 4.767.957 6.166 2.093.584.235 1.077.546 1.474.952.85.869 1.132 2.037 1.132 3.368 0 .368-.014.733-.052 1.086.23.462.477 1.088.644 1.517 1.258.364 2.233 1.721 2.605 2.656a.841.841 0 0 1 .053.22v2.869a.641.641 0 0 1-.078.256Zm-11.75-5.992h-.344a4.359 4.359 0 0 1-.355.508c-.77.947-1.918 1.492-3.508 1.492-1.725 0-2.989-.359-3.782-1.259a2.137 2.137 0 0 1-.085-.104L4 11.746v6.585c1.435.779 4.514 2.179 8 2.179 3.486 0 6.565-1.4 8-2.179v-6.585l-.098-.104s-.033.045-.085.104c-.793.9-2.057 1.259-3.782 1.259-1.59 0-2.738-.545-3.508-1.492a4.359 4.359 0 0 1-.355-.508Zm2.328 3.25c.549 0 1 .451 1 1v2c0 .549-.451 1-1 1-.549 0-1-.451-1-1v-2c0-.549.451-1 1-1Zm-5 0c.549 0 1 .451 1 1v2c0 .549-.451 1-1 1-.549 0-1-.451-1-1v-2c0-.549.451-1 1-1Zm3.313-6.185c.136 1.057.403 1.913.878 2.497.442.544 1.134.938 2.344.938 1.573 0 2.292-.337 2.657-.751.384-.435.558-1.15.558-2.361 0-1.14-.243-1.847-.705-2.319-.477-.488-1.319-.862-2.824-1.025-1.487-.161-2.192.138-2.533.529-.269.307-.437.808-.438 1.578v.021c0 .265.021.562.063.893Zm-1.626 0c.042-.331.063-.628.063-.894v-.02c-.001-.77-.169-1.271-.438-1.578-.341-.391-1.046-.69-2.533-.529-1.505.163-2.347.537-2.824 1.025-.462.472-.705 1.179-.705 2.319 0 1.211.175 1.926.558 2.361.365.414 1.084.751 2.657.751 1.21 0 1.902-.394 2.344-.938.475-.584.742-1.44.878-2.497Z" fill="currentColor"/>
+    <path v-else-if="provider === 'copilot'" d="M23.922 16.997C23.061 18.492 18.063 22.02 12 22.02 5.937 22.02.939 18.492.078 16.997A.641.641 0 0 1 0 16.741v-2.869a.883.883 0 0 1 .053-.22c.372-.935 1.347-2.292 2.605-2.656.167-.429.414-1.055.644-1.517a10.098 10.098 0 0 1-.052-1.086c0-1.331.282-2.499 1.132-3.368.397-.406.89-.717 1.474-.952C7.255 2.937 9.248 1.98 11.978 1.98c2.731 0 4.767.957 6.166 2.093.584.235 1.077.546 1.474.952.85.869 1.132 2.037 1.132 3.368 0 .368-.014.733-.052 1.086.23.462.477 1.088.644 1.517 1.258.364 2.233 1.721 2.605 2.656a.841.841 0 0 1 .053.22v2.869a.641.641 0 0 1-.078.256Zm-11.75-5.992h-.344a4.359 4.359 0 0 1-.355.508c-.77.947-1.918 1.492-3.508 1.492-1.725 0-2.989-.359-3.782-1.259a2.137 2.137 0 0 1-.085-.104L4 11.746v6.585c1.435.779 4.514 2.179 8 2.179 3.486 0 6.565-1.4 8-2.179v-6.585l-.098-.104s-.033.045-.085.104c-.793.9-2.057 1.259-3.782 1.259-1.59 0-2.738-.545-3.508-1.492a4.359 4.359 0 0 1-.355-.508Zm2.328 3.25c.549 0 1 .451 1 1v2c0 .549-.451 1-1 1-.549 0-1-.451-1-1v-2c0-.549.451-1 1-1Zm-5 0c.549 0 1 .451 1 1v2c0 .549-.451 1-1 1-.549 0-1-.451-1-1v-2c0-.549.451-1 1-1Zm3.313-6.185c.136 1.057.403 1.913.878 2.497.442.544 1.134.938 2.344.938 1.573 0 2.292-.337 2.657-.751.384-.435.558-1.15.558-2.361 0-1.14-.243-1.847-.705-2.319-.477-.488-1.319-.862-2.824-1.025-1.487-.161-2.192.138-2.533.529-.269.307-.437.808-.438 1.578v.021c0 .265.021.562.063.893Zm-1.626 0c.042-.331.063-.628.063-.894v-.02c-.001-.77-.169-1.271-.438-1.578-.341-.391-1.046-.69-2.533-.529-1.505.163-2.347.537-2.824 1.025-.462.472-.705 1.179-.705 2.319 0 1.211.175 1.926.558 2.361.365.414 1.084.751 2.657.751 1.21 0 1.902-.394 2.344-.938.475-.584.742-1.44.878-2.497Z" fill="currentColor"/>
+    <path v-else-if="selectedProvider === 'aider' || provider === 'aider'" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8h16v10zm-2-1h-6v-2h6v2zM6 10h2v2H6v-2zm0 4h2v2H6v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2z" fill="currentColor" />
+    <path v-else d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z" fill="currentColor" />
+</svg>
+                <h1 class="font-semibold text-lg tracking-tight">{{ providerTitle }}</h1>
             </div>
             
-            <div class="ml-auto flex items-center gap-4">
+            <!-- Centered Dropdown -->
+            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center z-20">
+                <div class="relative">
+                    <button 
+                        @click="isDropdownOpen = !isDropdownOpen"
+                        @blur="setTimeout(() => isDropdownOpen = false, 200)"
+                        :class="['flex items-center gap-2 bg-background border-2 text-foreground text-sm rounded-lg focus:ring-ring focus:border-ring px-4 py-2 font-semibold shadow-sm cursor-pointer transition-colors outline-none', !selectedProvider ? 'border-border hover:border-muted-foreground text-muted-foreground' : (selectedProvider === 'gemini' ? 'border-blue-500/50 hover:border-blue-500' : (selectedProvider === 'cursor' ? 'border-slate-500/50 hover:border-slate-500' : (selectedProvider === 'copilot' ? 'border-indigo-400/50 hover:border-indigo-400' : 'border-orange-500/50 hover:border-orange-500')))]"
+                    >
+                        <svg v-if="!selectedProvider" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-muted-foreground"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                        <svg v-else-if="selectedProvider === 'gemini'" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500">
+                            <path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81" fill="currentColor" />
+                        </svg>
+                        <svg v-else-if="selectedProvider === 'cursor'" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400">
+                            <path d="M11.503.131 1.891 5.678a.84.84 0 0 0-.42.726v11.188c0 .3.162.575.42.724l9.609 5.55a1 1 0 0 0 .998 0l9.61-5.55a.84.84 0 0 0 .42-.724V6.404a.84.84 0 0 0-.42-.726L12.497.131a1.01 1.01 0 0 0-.996 0M2.657 6.338h18.55c.263 0 .43.287.297.515L12.23 22.918c-.062.107-.229.064-.229-.06V12.335a.59.59 0 0 0-.295-.51l-9.11-5.257c-.109-.063-.064-.23.061-.23" fill="currentColor"/>
+                        </svg>
+                        <svg v-else-if="selectedProvider === 'copilot'" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-400">
+<path d="M23.922 16.997C23.061 18.492 18.063 22.02 12 22.02 5.937 22.02.939 18.492.078 16.997A.641.641 0 0 1 0 16.741v-2.869a.883.883 0 0 1 .053-.22c.372-.935 1.347-2.292 2.605-2.656.167-.429.414-1.055.644-1.517a10.098 10.098 0 0 1-.052-1.086c0-1.331.282-2.499 1.132-3.368.397-.406.89-.717 1.474-.952C7.255 2.937 9.248 1.98 11.978 1.98c2.731 0 4.767.957 6.166 2.093.584.235 1.077.546 1.474.952.85.869 1.132 2.037 1.132 3.368 0 .368-.014.733-.052 1.086.23.462.477 1.088.644 1.517 1.258.364 2.233 1.721 2.605 2.656a.841.841 0 0 1 .053.22v2.869a.641.641 0 0 1-.078.256Zm-11.75-5.992h-.344a4.359 4.359 0 0 1-.355.508c-.77.947-1.918 1.492-3.508 1.492-1.725 0-2.989-.359-3.782-1.259a2.137 2.137 0 0 1-.085-.104L4 11.746v6.585c1.435.779 4.514 2.179 8 2.179 3.486 0 6.565-1.4 8-2.179v-6.585l-.098-.104s-.033.045-.085.104c-.793.9-2.057 1.259-3.782 1.259-1.59 0-2.738-.545-3.508-1.492a4.359 4.359 0 0 1-.355-.508Zm2.328 3.25c.549 0 1 .451 1 1v2c0 .549-.451 1-1 1-.549 0-1-.451-1-1v-2c0-.549.451-1 1-1Zm-5 0c.549 0 1 .451 1 1v2c0 .549-.451 1-1 1-.549 0-1-.451-1-1v-2c0-.549.451-1 1-1Zm3.313-6.185c.136 1.057.403 1.913.878 2.497.442.544 1.134.938 2.344.938 1.573 0 2.292-.337 2.657-.751.384-.435.558-1.15.558-2.361 0-1.14-.243-1.847-.705-2.319-.477-.488-1.319-.862-2.824-1.025-1.487-.161-2.192.138-2.533.529-.269.307-.437.808-.438 1.578v.021c0 .265.021.562.063.893Zm-1.626 0c.042-.331.063-.628.063-.894v-.02c-.001-.77-.169-1.271-.438-1.578-.341-.391-1.046-.69-2.533-.529-1.505.163-2.347.537-2.824 1.025-.462.472-.705 1.179-.705 2.319 0 1.211.175 1.926.558 2.361.365.414 1.084.751 2.657.751 1.21 0 1.902-.394 2.344-.938.475-.584.742-1.44.878-2.497Z" fill="currentColor"/>
+</svg>
+                        <svg v-else-if="selectedProvider === 'aider'" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-500">
+                            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8h16v10zm-2-1h-6v-2h6v2zM6 10h2v2H6v-2zm0 4h2v2H6v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2z" fill="currentColor" />
+                        </svg>
+                        <svg v-else role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-orange-500">
+                            <path d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z" fill="currentColor" />
+                        </svg>
+                        {{ selectedProvider === 'gemini' ? 'Gemini CLI' : (selectedProvider === 'cursor' ? 'Cursor IDE' : (selectedProvider === 'copilot' ? 'GitHub Copilot' : (selectedProvider === 'aider' ? 'Aider CLI' : (selectedProvider === 'claude' ? 'Claude Code' : 'Select Provider...')))) }}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1 opacity-50"><path d="m6 9 6 6 6-6"/></svg>
+                    </button>
+
+                    <div v-if="isDropdownOpen" class="absolute top-full mt-2 w-full bg-card border border-border rounded-lg shadow-lg overflow-hidden z-50">
+                        <button 
+                            @click="selectedProvider = 'claude'; isDropdownOpen = false"
+                            class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors border-b border-border"
+                        >
+                            <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-orange-500">
+                                <path d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z" fill="currentColor" />
+                            </svg>
+                            Claude Code
+                        </button>
+                        <button 
+                            @click="selectedProvider = 'gemini'; isDropdownOpen = false"
+                            class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors border-t border-border"
+                        >
+                            <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-500">
+                                <path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81" fill="currentColor" />
+                            </svg>
+                            Gemini CLI
+                        </button>
+<button 
+                            @click="selectedProvider = 'cursor'; isDropdownOpen = false"
+                            class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors border-t border-border"
+                        >
+                            <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400">
+                                <path d="M11.503.131 1.891 5.678a.84.84 0 0 0-.42.726v11.188c0 .3.162.575.42.724l9.609 5.55a1 1 0 0 0 .998 0l9.61-5.55a.84.84 0 0 0 .42-.724V6.404a.84.84 0 0 0-.42-.726L12.497.131a1.01 1.01 0 0 0-.996 0M2.657 6.338h18.55c.263 0 .43.287.297.515L12.23 22.918c-.062.107-.229.064-.229-.06V12.335a.59.59 0 0 0-.295-.51l-9.11-5.257c-.109-.063-.064-.23.061-.23" fill="currentColor"/>
+                            </svg>
+                            Cursor IDE
+                        </button>
+<button 
+                            @click="selectedProvider = 'copilot'; isDropdownOpen = false"
+                            class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors border-t border-border"
+                        >
+                            <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-400">
+                                <path d="M23.922 16.997C23.061 18.492 18.063 22.02 12 22.02 5.937 22.02.939 18.492.078 16.997A.641.641 0 0 1 0 16.741v-2.869a.883.883 0 0 1 .053-.22c.372-.935 1.347-2.292 2.605-2.656.167-.429.414-1.055.644-1.517a10.098 10.098 0 0 1-.052-1.086c0-1.331.282-2.499 1.132-3.368.397-.406.89-.717 1.474-.952C7.255 2.937 9.248 1.98 11.978 1.98c2.731 0 4.767.957 6.166 2.093.584.235 1.077.546 1.474.952.85.869 1.132 2.037 1.132 3.368 0 .368-.014.733-.052 1.086.23.462.477 1.088.644 1.517 1.258.364 2.233 1.721 2.605 2.656a.841.841 0 0 1 .053.22v2.869a.641.641 0 0 1-.078.256Zm-11.75-5.992h-.344a4.359 4.359 0 0 1-.355.508c-.77.947-1.918 1.492-3.508 1.492-1.725 0-2.989-.359-3.782-1.259a2.137 2.137 0 0 1-.085-.104L4 11.746v6.585c1.435.779 4.514 2.179 8 2.179 3.486 0 6.565-1.4 8-2.179v-6.585l-.098-.104s-.033.045-.085.104c-.793.9-2.057 1.259-3.782 1.259-1.59 0-2.738-.545-3.508-1.492a4.359 4.359 0 0 1-.355-.508Zm2.328 3.25c.549 0 1 .451 1 1v2c0 .549-.451 1-1 1-.549 0-1-.451-1-1v-2c0-.549.451-1 1-1Zm-5 0c.549 0 1 .451 1 1v2c0 .549-.451 1-1 1-.549 0-1-.451-1-1v-2c0-.549.451-1 1-1Zm3.313-6.185c.136 1.057.403 1.913.878 2.497.442.544 1.134.938 2.344.938 1.573 0 2.292-.337 2.657-.751.384-.435.558-1.15.558-2.361 0-1.14-.243-1.847-.705-2.319-.477-.488-1.319-.862-2.824-1.025-1.487-.161-2.192.138-2.533.529-.269.307-.437.808-.438 1.578v.021c0 .265.021.562.063.893Zm-1.626 0c.042-.331.063-.628.063-.894v-.02c-.001-.77-.169-1.271-.438-1.578-.341-.391-1.046-.69-2.533-.529-1.505.163-2.347.537-2.824 1.025-.462.472-.705 1.179-.705 2.319 0 1.211.175 1.926.558 2.361.365.414 1.084.751 2.657.751 1.21 0 1.902-.394 2.344-.938.475-.584.742-1.44.878-2.497Z" fill="currentColor"/>
+                            </svg>
+                            GitHub Copilot
+                        </button>
+                        <button 
+                            @click="selectedProvider = 'aider'; isDropdownOpen = false"
+                            class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors border-t border-border"
+                        >
+                            <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-500">
+                                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8h16v10zm-2-1h-6v-2h6v2zM6 10h2v2H6v-2zm0 4h2v2H6v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2z" fill="currentColor" />
+                            </svg>
+                            Aider CLI
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ml-auto flex items-center gap-4 z-10">
                 <div class="text-sm text-muted-foreground hidden sm:block">
+
                     Interactive Reference Guide
                 </div>
                 
@@ -154,7 +241,7 @@
         <div class="flex flex-1 overflow-hidden">
             
             <!-- Sidebar (File Tree) -->
-            <aside class="w-80 border-r border-border bg-card/50 flex flex-col shrink-0 transition-colors duration-200">
+            <aside v-if="selectedProvider" class="w-80 border-r border-border bg-card/50 flex flex-col shrink-0 transition-colors duration-200">
                 <div class="p-3 border-b border-border bg-muted/30 shrink-0">
                     <h2 class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Repository Structure</h2>
                 </div>
@@ -165,6 +252,7 @@
                         :node="node" 
                         :level="0"
                         :selected-id="selectedNode ? selectedNode.id : null"
+                        :provider="selectedProvider"
                         @select="selectedNode = $event"
                         @hover="hoveredNode = $event"
                     ></file-tree-node>
@@ -174,12 +262,27 @@
             <!-- Content Area -->
             <main class="flex-1 flex flex-col min-w-0 bg-background overflow-hidden relative transition-colors duration-200">
                 
-                <template v-if="displayNode">
+                <template v-if="!selectedProvider">
+                    <!-- Empty State Watermark -->
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none opacity-40">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground mb-6"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                        <h2 class="text-3xl font-bold text-muted-foreground tracking-tight">AI Architecture Explorer</h2>
+                        <p class="text-lg text-muted-foreground/80 mt-2 max-w-md text-center">Select an AI provider from the top dropdown to visualize its project structure, rules, and configuration schemas.</p>
+                    </div>
+                </template>
+
+                <template v-else-if="displayNode">
                     <!-- Info Header Area -->
                     <div class="shrink-0 p-6 pb-2">
                         <div class="mb-4">
                             <h2 class="text-2xl font-bold text-foreground flex items-center gap-2">
-                                <svg v-if="displayNode.type === 'folder'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-orange-500 fill-orange-500/20"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
+                                <svg v-if="displayNode.type === 'folder'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" :class="['w-6 h-6', selectedProvider === 'gemini' ? 'text-blue-500' : (selectedProvider === 'cursor' ? 'text-slate-400' : (selectedProvider === 'copilot' ? 'text-indigo-400' : (selectedProvider === 'aider' ? 'text-emerald-500' : 'text-orange-500')))]">
+    <path v-if="selectedProvider === 'gemini'" d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81" fill="currentColor" />
+    <path v-else-if="selectedProvider === 'cursor'" d="M11.503.131 1.891 5.678a.84.84 0 0 0-.42.726v11.188c0 .3.162.575.42.724l9.609 5.55a1 1 0 0 0 .998 0l9.61-5.55a.84.84 0 0 0 .42-.724V6.404a.84.84 0 0 0-.42-.726L12.497.131a1.01 1.01 0 0 0-.996 0M2.657 6.338h18.55c.263 0 .43.287.297.515L12.23 22.918c-.062.107-.229.064-.229-.06V12.335a.59.59 0 0 0-.295-.51l-9.11-5.257c-.109-.063-.064-.23.061-.23" fill="currentColor" />
+    <path v-else-if="selectedProvider === 'copilot'" d="M23.922 16.997C23.061 18.492 18.063 22.02 12 22.02 5.937 22.02.939 18.492.078 16.997A.641.641 0 0 1 0 16.741v-2.869a.883.883 0 0 1 .053-.22c.372-.935 1.347-2.292 2.605-2.656.167-.429.414-1.055.644-1.517a10.098 10.098 0 0 1-.052-1.086c0-1.331.282-2.499 1.132-3.368.397-.406.89-.717 1.474-.952C7.255 2.937 9.248 1.98 11.978 1.98c2.731 0 4.767.957 6.166 2.093.584.235 1.077.546 1.474.952.85.869 1.132 2.037 1.132 3.368 0 .368-.014.733-.052 1.086.23.462.477 1.088.644 1.517 1.258.364 2.233 1.721 2.605 2.656a.841.841 0 0 1 .053.22v2.869a.641.641 0 0 1-.078.256Zm-11.75-5.992h-.344a4.359 4.359 0 0 1-.355.508c-.77.947-1.918 1.492-3.508 1.492-1.725 0-2.989-.359-3.782-1.259a2.137 2.137 0 0 1-.085-.104L4 11.746v6.585c1.435.779 4.514 2.179 8 2.179 3.486 0 6.565-1.4 8-2.179v-6.585l-.098-.104s-.033.045-.085.104c-.793.9-2.057 1.259-3.782 1.259-1.59 0-2.738-.545-3.508-1.492a4.359 4.359 0 0 1-.355-.508Zm2.328 3.25c.549 0 1 .451 1 1v2c0 .549-.451 1-1 1-.549 0-1-.451-1-1v-2c0-.549.451-1 1-1Zm-5 0c.549 0 1 .451 1 1v2c0 .549-.451 1-1 1-.549 0-1-.451-1-1v-2c0-.549.451-1 1-1Zm3.313-6.185c.136 1.057.403 1.913.878 2.497.442.544 1.134.938 2.344.938 1.573 0 2.292-.337 2.657-.751.384-.435.558-1.15.558-2.361 0-1.14-.243-1.847-.705-2.319-.477-.488-1.319-.862-2.824-1.025-1.487-.161-2.192.138-2.533.529-.269.307-.437.808-.438 1.578v.021c0 .265.021.562.063.893Zm-1.626 0c.042-.331.063-.628.063-.894v-.02c-.001-.77-.169-1.271-.438-1.578-.341-.391-1.046-.69-2.533-.529-1.505.163-2.347.537-2.824 1.025-.462.472-.705 1.179-.705 2.319 0 1.211.175 1.926.558 2.361.365.414 1.084.751 2.657.751 1.21 0 1.902-.394 2.344-.938.475-.584.742-1.44.878-2.497Z" fill="currentColor" />
+    <path v-else-if="selectedProvider === 'aider' || provider === 'aider'" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8h16v10zm-2-1h-6v-2h6v2zM6 10h2v2H6v-2zm0 4h2v2H6v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2z" fill="currentColor" />
+    <path v-else d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z" fill="currentColor" />
+</svg>
                                 <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-slate-400"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
                                 
                                 {{ displayNode.name }}
@@ -189,7 +292,7 @@
                                 </span>
                             </h2>
                             <p class="text-sm text-muted-foreground mt-1 flex items-center gap-1.5">
-                                <span :class="['w-2 h-2 rounded-full', hoveredNode ? 'bg-amber-500 animate-pulse' : 'bg-green-500']"></span>
+                                <span :class="['w-2 h-2 rounded-full', hoveredNode ? (selectedProvider === 'gemini' ? 'bg-blue-400 animate-pulse' : (selectedProvider === 'cursor' ? 'bg-slate-400 animate-pulse' : (selectedProvider === 'copilot' ? 'bg-indigo-400 animate-pulse' : (selectedProvider === 'aider' ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500 animate-pulse')))) : 'bg-green-500']"></span>
                                 {{ hoveredNode ? 'Previewing hover details' : 'Selected' }}
                             </p>
                         </div>
@@ -252,13 +355,13 @@
                         </div>
                     </div>
                 </template>
-                
             </main>
         </div>
     </div>
 
     <script>
-        const fileSystemData = [
+        
+        const claudeData = [
           {
             id: "user",
             name: "user-level (~/.claude/)",
@@ -604,20 +707,1129 @@ When the user says "migrate the database" or modifies a \`schema.prisma\` file.
           }
         ];
 
+
+        const geminiData = [
+  {
+    id: "user",
+    name: "user-level (~/.gemini/)",
+    type: "folder",
+    info: {
+      what: "Global machine-level configuration directory.",
+      why: "Stores your personal developer preferences, global skills, and cross-project auto-memory.",
+      how: "Located in your operating system's home directory.",
+      when: "Global settings are loaded first. Memory is loaded per project."
+    },
+    children: [
+      {
+        id: "user-gemini-md",
+        name: "GEMINI.md",
+        badge: "Level 1: Global",
+        type: "file",
+        content: `# Global Developer Persona
+- I am a Senior Staff Engineer focusing on systems architecture and cloud scalability.
+- My operating system is macOS Sonoma. My preferred shell is zsh.
+
+# Communication Style
+- IMPORTANT: Skip all pleasantries, apologies, and robotic confirmations ("Okay, I will do that").
+- When a terminal command fails, automatically read the stderr output and attempt to diagnose and fix it before asking me what to do.
+- Keep explanations strictly technical and focused on the "why" rather than the "what".
+
+# Tooling Defaults
+- Always prefer \`pnpm\` over \`npm\` or \`yarn\`.
+- Use the AWS CLI v2 syntax for all cloud interactions.`,
+        info: {
+          what: "Global preferences across ALL your projects.",
+          why: "Sets your personal boundaries, environment facts, and communication style globally.",
+          how: "Use concise Markdown with strong emphasis words (ALWAYS, NEVER).",
+          when: "Applied to the system prompt across all projects.",
+          priority: "Level 1 (Global): Lowest priority. Acts as a baseline but is overridden by project rules."
+        }
+      },
+      {
+        id: "user-settings",
+        name: "settings.json",
+        badge: "Config",
+        type: "file",
+        content: `{
+  "model": "gemini-2.5-pro",
+  "telemetry": false,
+  "editor": "vscode",
+  "ui": {
+    "theme": "dark",
+    "markdownRendering": true
+  }
+}`,
+        info: {
+          what: "Global JSON configuration file.",
+          why: "To store structured preferences that the CLI runtime reads directly (e.g., active model, telemetry).",
+          how: "Edit the JSON values directly or via the CLI config command.",
+          when: "Loaded on every CLI invocation.",
+          priority: "Overrides default CLI behavior globally."
+        }
+      },
+      {
+        id: "user-projects",
+        name: "projects",
+        type: "folder",
+        info: {
+          what: "Directory for project-specific data managed globally.",
+          why: "To isolate memory between different codebases without polluting the local git repository.",
+          how: "Contains folders named after project path hashes.",
+          when: "Accessed dynamically when working within the corresponding project."
+        },
+        children: [
+          {
+            id: "user-projects-hash",
+            name: "<project-hash>",
+            type: "folder",
+            info: {
+              what: "A specific project's workspace data.",
+              why: "Provides an isolated long-term memory namespace.",
+              how: "Folder named with a unique SHA hash of the project's absolute path.",
+              when: "When working in this specific project directory."
+            },
+            children: [
+              {
+                id: "user-projects-memory",
+                name: "memory",
+                type: "folder",
+                info: {
+                  what: "Directory storing long-term project memory.",
+                  why: "Allows Gemini to persist context, learnings, and corrections across sessions.",
+                  how: "Maintained automatically by the CLI agent.",
+                  when: "Accessed whenever you work in the corresponding project."
+                },
+                children: [
+                  {
+                    id: "user-projects-memory-core",
+                    name: "MEMORY.md",
+                    badge: "Level 2: Auto-memory",
+                    type: "file",
+                    content: `# Project State
+
+## Discovered Build Commands
+- The frontend requires \`pnpm run build:ui\` before deploying.
+- The Go backend must be compiled using \`go build -o bin/api cmd/api/main.go\`.
+
+## Debugging Insights
+- The project uses the Edge runtime on Vercel, so we cannot rely on Node.js specific crypto modules in middleware.
+- The PostgreSQL database is mapped to port 54323 locally to avoid conflicts.
+
+## Active Context
+- Currently migrating authentication from legacy JWTs to NextAuth.js v5 (Auth.js).`,
+                    info: {
+                      what: "Auto Memory file written by Gemini itself.",
+                      why: "Fed by the agent over the course of your sessions to remember build commands and debugging insights.",
+                      how: "Managed autonomously by Gemini CLI.",
+                      when: "Always loaded when in the project.",
+                      priority: "Level 2 (Auto-Memory): Overrides global settings, overridden by explicit project instructions."
+                    }
+                  },
+                  {
+                    id: "user-projects-memory-topic",
+                    name: "topic-files.md",
+                    badge: "Secondary",
+                    type: "file",
+                    content: `# Authentication Setup
+- We are using OAuth 2.0 with custom Auth0 providers.
+- The client secret is injected via the AWS Secrets Manager during CI/CD. Do not look for it in local .env files.`,
+                    info: {
+                      what: "Supplementary memory files.",
+                      why: "To compartmentalize specific domains or deep-dives, preventing MEMORY.md from becoming too large and token-heavy.",
+                      how: "Gemini creates these when a specific topic requires extensive, persistent notes.",
+                      when: "Loaded dynamically when the topic is relevant to the active prompt."
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "proj",
+    name: "project-level (your-project/)",
+    type: "folder",
+    info: {
+      what: "Project-level configuration directory.",
+      why: "Ensures everyone on the project team shares the exact same AI rules and architectural goals.",
+      how: "Created in the root of your project repository. Shared via version control.",
+      when: "Automatically loaded by Gemini whenever you interact with the CLI inside this workspace."
+    },
+    children: [
+      {
+        id: "proj-geminiignore",
+        name: ".geminiignore",
+        badge: "Config",
+        type: "file",
+        content: `# Exclude large directories from context
+node_modules/
+build/
+dist/
+.next/
+coverage/
+
+# Exclude sensitive files
+.env
+.env.local
+.env.production
+credentials.json
+certs/
+
+# Exclude binary and media
+*.jpg
+*.png
+*.pdf
+*.mp4
+*.wasm`,
+        info: {
+          what: "A file containing glob patterns to exclude from the CLI's context.",
+          why: "Prevents the AI from reading large, irrelevant, or sensitive files, saving tokens, improving speed, and maintaining security.",
+          how: "Standard gitignore syntax.",
+          when: "Checked during repository indexing and file reading operations.",
+          priority: "High (Security & Performance critical)"
+        }
+      },
+      {
+        id: "proj-gemini-md",
+        name: "GEMINI.md",
+        badge: "Level 3: Project",
+        type: "file",
+        content: `# Acme Corp Data Pipeline
+This repository handles the high-throughput streaming ingestion pipeline.
+
+## Core Directives
+@.gemini/rules/coding-style.md
+@.gemini/rules/testing.md
+
+## Build & Run
+- Dev Server: \`docker-compose up -d\`
+- DB Migrations: \`pnpm db:migrate\`
+
+## Architecture Rules
+- All incoming streams must be validated against their protobuf schema before entering the Kafka queue.
+- Never bypass the internal Redis cache layer for configuration reads.
+- We use Monorepo architecture. Do not cross-import between \`packages/core\` and \`apps/web\` directly.`,
+        info: {
+          what: "The most strategic project context file. Shared with the entire team.",
+          why: "Defines the project architecture, build commands, and allows importing modular rules via '@filename.md'.",
+          how: "Keep it ruthlessly pruned and scannable. Target 80–200 lines max.",
+          when: "Always available as the primary context layer.",
+          priority: "Level 3 (Project): High priority. Defines the shared baseline for the repository."
+        }
+      },
+      {
+        id: "proj-dot-gemini",
+        name: ".gemini",
+        type: "folder",
+        info: {
+          what: "Internal configuration directory for specific rules, skills, and agents.",
+          why: "Allows separation of concerns for rules without bloating the root directory with dotfiles.",
+          how: "A hidden folder at the project root.",
+          when: "Loaded automatically on CLI startup."
+        },
+        children: [
+          {
+            id: "proj-dot-gemini-md",
+            name: "GEMINI.md",
+            badge: "Level 3b: Internal",
+            type: "file",
+            content: `# Internal Agent Guidelines
+- Never execute destructive shell commands (like \`rm -rf\` or \`DROP TABLE\`) without running a dry-run flag first.
+- Always prioritize parsing logs over guessing errors.
+- If an npm install fails, automatically try clearing the npm cache before giving up.`,
+            info: {
+              what: "Secondary project-level instructions.",
+              why: "Used for internal configuration and directives specifically meant for the AI's agentic behavior, keeping the root GEMINI.md clean for human readability.",
+              how: "Standard Markdown instructions.",
+              when: "Loaded automatically alongside the root file.",
+              priority: "Overrides root GEMINI.md for specific AI agent behaviors."
+            }
+          },
+          {
+            id: "proj-dot-gemini-settings",
+            name: "settings.json",
+            badge: "Config",
+            type: "file",
+            content: `{
+  "features": {
+    "autoPlan": true,
+    "strictTypes": true,
+    "backgroundCommands": false
+  },
+  "env": {
+    "LOCAL_TEST_PORT": "8080"
+  }
+}`,
+            info: {
+              what: "Local project settings and feature flags.",
+              why: "To override global CLI behaviors for this specific workspace.",
+              how: "JSON configuration.",
+              when: "Loaded automatically.",
+              priority: "Overrides global user-level settings.json."
+            }
+          },
+          {
+            id: "proj-rules",
+            name: "rules",
+            type: "folder",
+            info: {
+              what: "Directory for Modular rules.",
+              why: "To keep GEMINI.md ruthlessly pruned by moving specific domain concerns into separate files.",
+              how: "Add Markdown files containing specific instructions.",
+              when: "Imported via @filename in GEMINI.md or loaded automatically."
+            },
+            children: [
+              {
+                id: "proj-rules-coding-style",
+                name: "coding-style.md",
+                badge: "Level 4: Modular",
+                type: "file",
+                content: `# Coding Style
+1. ALWAYS use functional components with \`React.FC\`.
+2. State management MUST use Zustand, never Redux.
+3. CSS is handled via Tailwind. Do not create \`.css\` files unless strictly necessary for keyframe animations.
+
+## Good Example
+\`\`\`tsx
+export const Button = ({ label }: { label: string }) => {
+  return <button className="bg-blue-500 px-4 py-2">{label}</button>
+};
+\`\`\`
+
+## Bad Example
+\`\`\`tsx
+const Button = (props: any) => {
+  // Never use 'any' type!
+  return <button>{props.label}</button>
+}
+export default Button; // Never use default exports
+\`\`\``,
+                info: {
+                  what: "Modular rule for coding style.",
+                  why: "Separates code styling from general project architecture.",
+                  how: "Short, scannable markdown with Correct/Incorrect examples.",
+                  when: "When referenced by the root GEMINI.md.",
+                  priority: "Level 4 (Modular): HIGHEST PRIORITY. When levels conflict, the most specific modular rule wins."
+                }
+              },
+              {
+                id: "proj-rules-security",
+                name: "security.md",
+                badge: "Level 4: Modular",
+                type: "file",
+                content: `# Security Mandates
+- IMPORTANT: NEVER hardcode API keys or secrets in source files.
+- ALWAYS use \`process.env\` to reference secrets.
+- Sanitize all user inputs using DOMPurify before rendering them into raw HTML to prevent XSS.
+- All SQL queries must use parameterized inputs to prevent SQL Injection. Do not use string interpolation for SQL.`,
+                info: {
+                  what: "Modular rule for security.",
+                  why: "Enforces strict security protocols.",
+                  how: "Use strong emphasis words like NEVER and ALWAYS.",
+                  when: "Automatically loaded.",
+                  priority: "Level 4 (Modular): HIGHEST PRIORITY."
+                }
+              }
+            ]
+          },
+          {
+            id: "proj-skills",
+            name: "skills",
+            type: "folder",
+            info: {
+              what: "Directory for custom capabilities and tools.",
+              why: "To give the Gemini agent custom tools to interact with your specific environment, APIs, or build systems.",
+              how: "Organized in subfolders per skill, containing a SKILL.md definition and executable scripts.",
+              when: "Loaded and executed ONLY when Gemini determines the skill is needed."
+            },
+            children: [
+              {
+                id: "proj-skills-db",
+                name: "db-migration",
+                type: "folder",
+                info: { what: "A real-world skill for database migrations.", why: "Allows Gemini to run prisma migrations autonomously.", how: "Follows the SKILL.md specification.", when: "On demand." },
+                children: [
+                  {
+                    id: "proj-skills-db-skill",
+                    name: "SKILL.md",
+                    badge: "Tool",
+                    type: "file",
+                    content: `---
+name: db-migration
+description: Safely generates and applies Prisma database migrations. Use this when the user asks to update the database schema or when you add a new model to schema.prisma.
+---
+
+# Trigger
+When the user says "migrate the database" or modifies a \`schema.prisma\` file.
+
+# Execution Steps
+1. Validate the schema formatting by running \`pnpm prisma format\`.
+2. Generate the migration by running \`scripts/generate-migration.sh <migration_name>\`.
+3. Read the generated SQL file output.
+4. Provide a summary of the SQL changes to the user and confirm success.`,
+                    info: {
+                      what: "The primary skill definition.",
+                      why: "Instructs Gemini on what the tool does and exactly what multi-step procedures to follow when invoked.",
+                      how: "Markdown file defining triggers and execution steps. Uses YAML frontmatter.",
+                      when: "Read dynamically when the agent matches user intent to the skill description."
+                    }
+                  },
+                  {
+                    id: "proj-skills-db-scripts",
+                    name: "scripts",
+                    type: "folder",
+                    info: { what: "Executable scripts for the skill.", why: "To perform complex or multi-step shell operations reliably.", how: "Bash, Python, or Node scripts.", when: "Executed by Gemini during skill use." },
+                    children: [
+                      {
+                        id: "proj-skills-db-helper",
+                        name: "generate-migration.sh",
+                        badge: "Executable",
+                        type: "file",
+                        content: `#!/bin/bash
+# Real world migration wrapper script
+MIGRATION_NAME=$1
+
+if [ -z "$MIGRATION_NAME" ]; then
+  echo "Error: Migration name required."
+  exit 1
+fi
+
+echo "Running prisma migrate dev..."
+pnpm prisma migrate dev --name "$MIGRATION_NAME"`,
+                        info: {
+                          what: "An executable bash script.",
+                          why: "Encapsulates automation logic securely so the agent doesn't have to guess bash syntax.",
+                          how: "Executed via shell command by the skill.",
+                          when: "During skill execution."
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: "proj-agents",
+            name: "agents",
+            type: "folder",
+            info: {
+              what: "Specialized AI roles and sub-agents.",
+              why: "To route complex tasks correctly or focus Gemini's context on deep-dive expertise without polluting the general system prompt.",
+              how: "Markdown files defining the persona and workflows.",
+              when: "When explicitly activated or routed to by the main orchestrator."
+            },
+            children: [
+              {
+                id: "proj-agents-orchestrator",
+                name: "orchestrator.md",
+                badge: "Real World",
+                type: "file",
+                content: `# Role
+You are the primary Orchestrator agent for the Acme Corp project. Your job is to analyze the user's request and delegate it to the appropriate specialized subagent.
+
+# Available Subagents
+- \`frontend-expert\`: Use for any React, Tailwind, or Vite tasks.
+- \`database-expert\`: Use for Prisma, Postgres, or Redis tasks.
+
+# Instructions
+- IMPORTANT: NEVER attempt to write code yourself.
+- ALWAYS delegate using the appropriate tool or subagent call.
+- Once the subagent finishes, synthesize their response for the user, summarizing what was done.
+- If a subagent fails, retry with different parameters up to 2 times before surfacing the error.`,
+                info: {
+                  what: "An orchestrator agent prompt.",
+                  why: "Orchestrators keep the main session history lean by delegating repetitive or highly specialized tasks. They act as strategic traffic cops.",
+                  how: "Set as the default entry agent if applicable.",
+                  when: "On general session start or explicit invocation."
+                }
+              }
+            ]
+          },
+          {
+            id: "proj-commands",
+            name: "commands",
+            type: "folder",
+            info: {
+              what: "Custom executable commands.",
+              why: "Allows you to extend the CLI's capabilities with custom shell scripts directly invokable by the user or agent.",
+              how: "Place executable scripts here.",
+              when: "Available to be called by the CLI or user."
+            },
+            children: [
+              {
+                id: "proj-commands-test",
+                name: "run-tests.sh",
+                badge: "Script",
+                type: "file",
+                content: `#!/bin/bash
+echo "Running full integration test suite..."
+export NODE_ENV=test
+npx vitest run --coverage`,
+                info: {
+                  what: "A custom command script.",
+                  why: "Provides a standardized way to execute complex workflows ensuring the correct environment variables are set.",
+                  how: "Invoked via CLI.",
+                  when: "On demand."
+                }
+              }
+            ]
+          },
+          {
+            id: "proj-hooks",
+            name: "hooks",
+            type: "folder",
+            info: {
+              what: "Lifecycle scripts.",
+              why: "Scripts that run automatically on specific CLI events (e.g., pre-commit, post-action).",
+              how: "Place bash scripts named after lifecycle events.",
+              when: "Triggered by the CLI lifecycle."
+            },
+            children: [
+              {
+                id: "proj-hooks-protect",
+                name: "protect-files.sh",
+                badge: "Hook",
+                type: "file",
+                content: `#!/bin/bash
+# Ensure .env is never modified by the AI agent
+if git diff --cached --name-only | grep -q ".env"; then
+  echo "Error: Modification of .env is strictly blocked by a pre-action hook."
+  exit 1
+fi`,
+                info: {
+                  what: "A lifecycle hook script.",
+                  why: "Enforces security or project invariants automatically.",
+                  how: "Executed by the CLI runner.",
+                  when: "During file modification attempts or pre-commit phases."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+];
+
+const cursorData = [
+  {
+    id: "proj",
+    name: "project-level (your-project/)",
+    type: "folder",
+    info: {
+      what: "Cursor IDE project-level configuration directory.",
+      why: "Defines AI behavior, context, and intelligent rules specifically for this project.",
+      how: "Created in the root of your project repository. Shared via version control.",
+      when: "Automatically indexed and utilized by Cursor Chat and Composer."
+    },
+    children: [
+      {
+        id: "proj-cursorrules",
+        name: ".cursorrules",
+        badge: "Legacy",
+        type: "file",
+        content: `# Project Context
+This is a legacy plain-text instructions file.
+
+# Rules
+- Use React server components where possible.
+- Do not use class components.`,
+        info: {
+          what: "Legacy single-file project rules.",
+          why: "Provided a single set of global instructions for the AI before the introduction of MDC (Markdown Cursor) rules. **Deprecated but supported.**",
+          how: "A plain markdown file in the project root.",
+          when: "Applied globally to all interactions, but lacks intelligent scoping.",
+          priority: "Low (Overrides global settings, but is superseded by specific .cursor/rules/*.mdc files)"
+        }
+      },
+      {
+        id: "proj-cursorignore",
+        name: ".cursorignore",
+        badge: "Config",
+        type: "file",
+        content: `# Ignore large folders
+node_modules/
+dist/
+.next/
+
+# Ignore generated assets
+*.mp4
+*.png
+*.pdf`,
+        info: {
+          what: "Excludes specific files from Cursor's indexing and codebase retrieval.",
+          why: "Prevents token bloat, keeps the AI focused on relevant source code, and stops it from parsing large build artifacts.",
+          how: "Standard gitignore syntax.",
+          when: "Checked during repository indexing and Codebase Semantic Search."
+        }
+      },
+      {
+        id: "proj-dot-cursor",
+        name: ".cursor",
+        type: "folder",
+        info: {
+          what: "Cursor specific internal directory.",
+          why: "Houses the modern MDC (Markdown Cursor) modular rules system.",
+          how: "Created automatically or manually in the project root.",
+          when: "Loaded continuously by Cursor."
+        },
+        children: [
+          {
+            id: "proj-cursor-rules",
+            name: "rules",
+            type: "folder",
+            info: {
+              what: "Directory for MDC (Markdown Cursor) files.",
+              why: "Allows for intelligent, context-aware rule activation using YAML frontmatter and globs.",
+              how: "Create .mdc files. You can type '/create-rule' in Cursor chat to generate these automatically.",
+              when: "Evaluated on every AI request to dynamically attach relevant context."
+            },
+            children: [
+              {
+                id: "proj-cursor-rules-context",
+                name: "000-project-context.mdc",
+                badge: "Always Apply",
+                type: "file",
+                content: `---
+description: High-level architectural context and tech stack
+globs: *
+alwaysApply: true
+---
+
+# Architecture
+- Next.js 14 App Router.
+- Supabase for Database and Auth.
+- TailwindCSS for styling.
+
+# Persona
+Act as an elite Staff Engineer. Provide extremely concise responses without apologies.`,
+                info: {
+                  what: "Global project context rule.",
+                  why: "Provides foundational instructions and tech stack definitions that should never be missed.",
+                  how: "Set 'alwaysApply: true' in the YAML frontmatter. Name it with a prefix like '000-' to keep it at the top.",
+                  when: "Added to the context of EVERY prompt in Cursor."
+                }
+              },
+              {
+                id: "proj-cursor-rules-frontend",
+                name: "frontend-components.mdc",
+                badge: "Intelligent",
+                type: "file",
+                content: `---
+description: Rules for React components, hooks, and UI styling
+globs: src/components/**/*.tsx, src/hooks/**/*.ts
+alwaysApply: false
+---
+
+# Component Standards
+- Always use functional components.
+- NEVER use default exports, only named exports.
+
+## Styling
+- Use Tailwind utility classes directly.
+- Do not create separate .css modules unless handling complex animations.`,
+                info: {
+                  what: "Scoped coding standard rule.",
+                  why: "Keeps context lean by only loading UI/Frontend rules when editing Frontend files.",
+                  how: "Use the 'globs' field to target specific directories like 'src/components/**/*'.",
+                  when: "Dynamically injected when the active file matches the globs or when the user query relates to the description."
+                }
+              },
+              {
+                id: "proj-cursor-rules-testing",
+                name: "testing.mdc",
+                badge: "Intelligent",
+                type: "file",
+                content: `---
+description: Writing and running tests using Vitest
+globs: **/*.test.ts, **/*.spec.ts
+alwaysApply: false
+---
+
+# Testing Strategy
+- We use Vitest for all unit testing.
+- Mock all network requests using MSW.
+
+## Incorrect Example
+describe('my test', () => {
+   // don't leave tests empty
+});
+
+## Correct Example
+describe('my test', () => {
+   it('should pass', () => {
+      expect(true).toBe(true);
+   });
+});`,
+                info: {
+                  what: "Workflow specific rule.",
+                  why: "Guides the AI on how to write tests only when you are actually working on tests. Demonstrates 'Correct' vs 'Incorrect' examples.",
+                  how: "Target '*.test.ts' files via globs.",
+                  when: "Applied intelligently based on context."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "user",
+    name: "user-level",
+    type: "folder",
+    info: {
+      what: "Cursor Global UI Settings.",
+      why: "Cursor does not rely heavily on global dotfiles in your home directory; personal preferences are handled via the native app UI.",
+      how: "Cmd/Ctrl + Shift + J -> Settings -> General -> Rules for AI",
+      when: "Applied globally to all projects."
+    },
+    children: [
+      {
+        id: "user-global-rules",
+        name: "Rules for AI (UI Settings)",
+        badge: "Global",
+        type: "file",
+        content: `// This is representative of the global text box in Cursor Settings
+// Accessible via: Settings > General > Rules for AI
+
+- I am on macOS.
+- Always use pnpm instead of npm.
+- Never write apologies or robotic preambles.
+- Always prefer functional programming patterns over classes.`,
+        info: {
+          what: "Global user instructions.",
+          why: "Sets baseline behaviors across all projects you open in Cursor.",
+          how: "Configured via Cursor's graphical settings interface.",
+          when: "Acts as the base prompt for all AI interactions."
+        }
+      }
+    ]
+  }
+];
+
+
+        const copilotData = [
+  {
+    id: "proj",
+    name: "project-level (your-project/)",
+    type: "folder",
+    info: {
+      what: "GitHub Copilot project-level configuration.",
+      why: "Defines architectural context, coding standards, and autonomous agent capabilities specifically for this repository.",
+      how: "Stored within the .github/ directory. Shared with your team via version control.",
+      when: "Automatically detected by VS Code and GitHub.com for Copilot Chat and Copilot Agents."
+    },
+    children: [
+      {
+        id: "proj-github-dir",
+        name: ".github",
+        type: "folder",
+        info: {
+          what: "Standard GitHub repository configuration folder.",
+          why: "GitHub Copilot integrates its instruction files natively into this existing GitHub configuration structure.",
+          how: "A standard folder at the root of the repository.",
+          when: "Read continuously by the Copilot extension."
+        },
+        children: [
+          {
+            id: "proj-copilot-instructions",
+            name: "copilot-instructions.md",
+            badge: "Global",
+            type: "file",
+            content: `# Acme Corp - Core API Repository
+You are an expert Backend Engineer. This repository is the backbone of the Acme Corp microservices architecture. It is built using Node.js, Express, and strictly typed TypeScript.
+
+## Core Architectural Directives
+1. **Dependency Injection**: All services must be injected into controllers. Never instantiate services directly inside route handlers.
+2. **Error Handling**: Never throw raw \`Error\` objects. Always use the custom \`AppError\` class exported from \`@/utils/errors.ts\` to ensure proper HTTP status codes and error tracing are preserved.
+3. **Database Access**: We use Prisma ORM. Direct SQL queries are strictly forbidden unless explicitly approved by a Principal Engineer. Always run \`npx prisma generate\` after schema changes.
+4. **Environment Variables**: All new environment variables must be registered and validated using the Zod schema in \`@/config/env.ts\`.
+
+## Code Style
+- Use \`camelCase\` for variables/functions and \`PascalCase\` for Classes/Interfaces.
+- Prefer early returns (guard clauses) to reduce nested \`if\` statements.
+- Every public utility function MUST have an exhaustive JSDoc block explaining its parameters, return type, and potential exceptions.`,
+            info: {
+              what: "Repository-wide global instructions.",
+              why: "Provides baseline context and coding conventions that Copilot should follow for every chat request in the workspace.",
+              how: "A Markdown file in the .github folder.",
+              when: "Injected into the context window for all queries within this repository.",
+              priority: "High (Applies to all files in the project)"
+            }
+          },
+          {
+            id: "proj-instructions-dir",
+            name: "instructions",
+            type: "folder",
+            info: {
+              what: "Directory for path-specific modular rules.",
+              why: "Allows you to scope specific instructions only to relevant parts of the codebase, preventing context bloat.",
+              how: "Create .md files and use 'applyTo' YAML frontmatter.",
+              when: "Evaluated dynamically when editing files."
+            },
+            children: [
+              {
+                id: "proj-instructions-api",
+                name: "api.instructions.md",
+                badge: "Scoped",
+                type: "file",
+                content: `---
+applyTo: "src/api/routes/**/*.ts"
+---
+
+# Route & Endpoint Guidelines
+This codebase adheres to a strict RESTful design. When creating or modifying endpoints, you must adhere to the following rules:
+
+## Response Envelope
+Every endpoint MUST return data wrapped in our standard envelope. Do not return raw arrays or objects.
+**Correct:**
+res.status(StatusCodes.OK).json({ success: true, data: user, meta: { total: 1 } });
+
+**Incorrect:**
+res.status(200).json(user);
+
+## Request Validation
+- All incoming \`req.body\`, \`req.query\`, and \`req.params\` must be validated using our Zod middleware BEFORE reaching the controller.
+- Map Zod validation failures strictly to \`HTTP 422 Unprocessable Entity\`.
+
+## Security Context
+- Do not log sensitive PII or authentication tokens.
+- All endpoints manipulating data (POST, PUT, DELETE) must pass through the \`requireAdmin\` or \`requireUser\` middleware.`,
+                info: {
+                  what: "Path-scoped instruction file.",
+                  why: "Ensures that API-specific rules are only loaded when working within the API directory.",
+                  how: "Use the \`applyTo\` field in the YAML frontmatter to define file globs.",
+                  when: "Loaded intelligently when the active file matches the globs."
+                }
+              },
+              {
+                id: "proj-instructions-tests",
+                name: "tests.instructions.md",
+                badge: "Scoped",
+                type: "file",
+                content: `---
+applyTo: ["**/*.test.ts", "**/*.spec.ts"]
+---
+
+# Testing Engineering Standards
+We maintain a strict 80% code coverage requirement. We use **Vitest** for unit testing and **Supertest** for e2e API testing.
+
+## Setup and Teardown
+- Ensure every test suite uses \`beforeEach\` to reset the database state using the \`truncateDB()\` utility.
+- Never leave dangling open handles; always gracefully close Prisma connections in \`afterAll\`.
+
+## Mocking Strategy
+- **NEVER** hit third-party APIs (Stripe, AWS, SendGrid) during tests. 
+- Use the mock factories provided in \`src/__mocks__/\`.
+- For date/time dependent tests, always use \`vi.setSystemTime()\` to prevent flaky tests in CI pipelines.
+
+## Assertion Rules
+- Prefer \`expect(foo).toStrictEqual(bar)\` over \`toEqual()\` to ensure precise type matching.
+- When testing thrown errors, always assert against the specific error message or Error class, not just that an error occurred.`,
+                info: {
+                  what: "Workflow-scoped instruction file.",
+                  why: "Guides Copilot on test formatting and mocking strategies only when interacting with test files.",
+                  how: "Target \`**/*.test.ts\` via the applyTo glob.",
+                  when: "Applied when working in test files."
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: "proj-agents",
+        name: "AGENTS.md",
+        badge: "Agent",
+        type: "file",
+        content: `# Autonomous Agent Directives
+When operating as a GitHub Copilot Agent (Workspace Mode), adhere to these strict operational steps.
+
+## 1. Initial Validation
+Before modifying any files, verify the current state of the workspace:
+- Run \`npm run lint:check\`
+- Run \`npm run typecheck\`
+Do not proceed if the main branch is already failing these checks.
+
+## 2. Implementation Phase
+- Follow the architectural patterns outlined in \`.github/copilot-instructions.md\`.
+- After making a change to a controller, you MUST write or update the corresponding test file in the \`__tests__\` directory.
+
+## 3. Build and Test Verification
+Once implementation is complete, you must autonomously verify your work:
+- To build the project: \`npm run build\`
+- To execute the test suite: \`npm run test:coverage\`
+- If tests fail, automatically read the \`stderr\` output, deduce the root cause, and attempt to fix the implementation before asking the user for help.
+
+## 4. Finalization
+Prepare a concise summary of the files changed and confirm that all type checks pass.`,
+        info: {
+          what: "Autonomous Agent directives.",
+          why: "Specifically instructs GitHub Copilot's autonomous agent (Copilot Workspace) on how to build, test, and validate changes autonomously.",
+          how: "A Markdown file in the project root containing explicit shell commands.",
+          when: "Used by the AI when executing multi-step autonomous tasks."
+        }
+      }
+    ]
+  },
+  {
+    id: "user",
+    name: "user-level",
+    type: "folder",
+    info: {
+      what: "GitHub Copilot global settings.",
+      why: "Personal preferences applied across all projects you open in VS Code.",
+      how: "Stored in VS Code Settings or a global copilot-instructions.md file.",
+      when: "Applied globally to all projects."
+    },
+    children: [
+      {
+        id: "user-global-rules",
+        name: "Settings (UI)",
+        badge: "Global",
+        type: "file",
+        content: `// Configured via VS Code Settings UI
+// Copilot Chat: Custom Instructions
+
+- Always provide concise, bulleted explanations.
+- Default to using dark mode color hex codes in CSS.
+- I prefer object-oriented programming for core services.`,
+        info: {
+          what: "VS Code Custom Instructions configuration.",
+          why: "Sets baseline behaviors and communication styles for your personal account.",
+          how: "Configured via Cmd/Ctrl+, -> Search 'Copilot Chat: Custom Instructions'.",
+          when: "Acts as the base prompt for all Copilot Chat interactions."
+        }
+      },
+      {
+        id: "user-global-file",
+        name: "copilot-instructions.md",
+        badge: "Global",
+        type: "file",
+        content: `# Personal Developer Profile
+- Language: TypeScript
+- Preferred Test Runner: Vitest
+- I do not use semicolons (StandardJS).`,
+        info: {
+          what: "Global markdown configuration file.",
+          why: "An alternative to the UI settings box, allowing you to write your global preferences in Markdown.",
+          how: "Stored at \`~/.config/Code/User/copilot-instructions.md\` (Windows).",
+          when: "Loaded by VS Code across all workspaces."
+        }
+      }
+    ]
+  }
+];
+
+        
+const aiderData = [
+  {
+    id: "proj",
+    name: "project-level (your-project/)",
+    type: "folder",
+    info: {
+      what: "Aider project-level configuration directory.",
+      why: "Defines AI behavior, context, and intelligent rules specifically for this project.",
+      how: "Created in the root of your project repository.",
+      when: "Automatically indexed and utilized by Aider."
+    },
+    children: [
+      {
+        id: "proj-aider-conf",
+        name: ".aider.conf.yml",
+        badge: "Config",
+        type: "file",
+        content: `model: claude-3-5-sonnet-20241022
+edit-format: diff
+map-tokens: 1024
+
+# Environment
+dark-mode: true
+lint-cmd: "npm run lint"
+test-cmd: "npm run test"`,
+        info: {
+          what: "Aider project configuration file.",
+          why: "Stores project-specific settings for Aider, such as the preferred model, edit format, and custom commands.",
+          how: "A YAML file in the project root.",
+          when: "Read by Aider on startup."
+        }
+      },
+      {
+        id: "proj-aiderignore",
+        name: ".aiderignore",
+        badge: "Config",
+        type: "file",
+        content: `# Ignore large folders
+node_modules/
+dist/
+.next/
+
+# Ignore generated assets
+*.mp4
+*.png`,
+        info: {
+          what: "Excludes specific files from Aider's indexing.",
+          why: "Prevents token bloat and keeps the AI focused on relevant source code.",
+          how: "Standard gitignore syntax.",
+          when: "Checked during repository indexing and codebase search."
+        }
+      },
+      {
+        id: "proj-env",
+        name: ".env",
+        badge: "Secrets",
+        type: "file",
+        content: `ANTHROPIC_API_KEY=your_api_key_here
+OPENAI_API_KEY=your_api_key_here`,
+        info: {
+          what: "Environment variables file.",
+          why: "Aider natively loads API keys and configuration from this file, keeping secrets out of version control.",
+          how: "A standard .env file.",
+          when: "Loaded automatically on startup."
+        }
+      },
+      {
+        id: "proj-aider-dir",
+        name: ".aider",
+        type: "folder",
+        info: {
+          what: "Aider's internal state and cache directory.",
+          why: "Stores chat history and repository map caches to speed up subsequent launches and maintain context.",
+          how: "Automatically created and managed by Aider.",
+          when: "Used continuously during sessions."
+        },
+        children: [
+          {
+            id: "proj-aider-history",
+            name: ".aider.chat.history.md",
+            badge: "Auto-memory",
+            type: "file",
+            content: `# Chat History
+User: Please add a new endpoint for fetching user data.
+Aider: I will add the endpoint in \`src/api/users.ts\`.`,
+            info: {
+              what: "Aider's chat history.",
+              why: "Maintains context of the conversation and actions taken during the session so you can resume later.",
+              how: "Automatically updated by Aider.",
+              when: "Updated after every message."
+            }
+          },
+          {
+            id: "proj-aider-cache",
+            name: ".aider.tags.cache.v3",
+            badge: "Cache",
+            type: "file",
+            content: `// Binary cache data of your repository's structure`,
+            info: {
+              what: "Repository map cache.",
+              why: "Aider uses this binary cache of your repository map to understand your codebase instantly without re-parsing every file.",
+              how: "Binary file generated by Aider.",
+              when: "Created and read automatically."
+            }
+          }
+        ]
+      },
+      {
+        id: "proj-architect",
+        name: ".aider.conventions.md",
+        badge: "Conventions",
+        type: "file",
+        content: `# Architecture
+We use functional components.
+Never use default exports.
+
+# Testing
+Use Vitest for all unit testing.`,
+        info: {
+          what: "Project conventions and architecture rules.",
+          why: "Instructs Aider on your specific coding standards, making sure it writes code that fits your exact style.",
+          how: "Add it to the chat using \`/read .aider.conventions.md\` or configure it in \`.aider.conf.yml\`.",
+          when: "Read into context when explicitly loaded or configured."
+        }
+      }
+    ]
+  },
+  {
+    id: "user",
+    name: "user-level (~/)",
+    type: "folder",
+    info: {
+      what: "Aider Global Configuration.",
+      why: "Personal preferences applied across all projects you open with Aider.",
+      how: "Stored in a global .aider.conf.yml file.",
+      when: "Applied globally to all projects."
+    },
+    children: [
+      {
+        id: "user-aider-conf",
+        name: ".aider.conf.yml",
+        badge: "Global",
+        type: "file",
+        content: `model: claude-3-opus-20240229
+auto-commits: false
+dark-mode: true`,
+        info: {
+          what: "Global Aider configuration file.",
+          why: "Sets baseline behaviors across all projects you open with Aider.",
+          how: "A YAML file in your home directory.",
+          when: "Acts as the base configuration."
+        }
+      }
+    ]
+  }
+];
+
+        const providersData = {
+            claude: claudeData,
+            gemini: geminiData,
+            cursor: cursorData,
+            copilot: copilotData,
+            aider: aiderData
+        };
+
+
+
         const app = Vue.createApp({
             data() {
                 return {
-                    fileSystem: fileSystemData,
+                    selectedProvider: '',
+                    isDropdownOpen: false,
                     selectedNode: null,
                     hoveredNode: null,
                     isDark: true
                 }
             },
             computed: {
+                fileSystem() {
+                    return this.selectedProvider ? providersData[this.selectedProvider] : [];
+                },
                 displayNode() {
                     return this.hoveredNode || this.selectedNode || this.fileSystem[0];
+                },
+                providerTitle() {
+                    if (!this.selectedProvider) return 'AI Architecture Explorer';
+                    return this.selectedProvider === 'claude' ? 'Claude Architecture Explorer' : (this.selectedProvider === 'cursor' ? 'Cursor Architecture Explorer' : (this.selectedProvider === 'copilot' ? 'GitHub Copilot Explorer' : (this.selectedProvider === 'aider' ? 'Aider Architecture Explorer' : 'Gemini Architecture Explorer')));
                 }
             },
+            watch: {
+                selectedProvider() {
+                    // Reset selection when provider changes
+                    if (!this.selectedProvider) {
+                        this.selectedNode = null;
+                        return;
+                    }
+                    if (this.fileSystem && this.fileSystem[0] && this.fileSystem[0].children) {
+                        const firstFile = this.fileSystem[0].children.find(c => c.type === 'file');
+                        this.selectedNode = firstFile || this.fileSystem[0];
+                    }
+                }
+            },
+
             methods: {
                 toggleTheme() {
                     this.isDark = !this.isDark;
@@ -629,11 +1841,6 @@ When the user says "migrate the database" or modifies a \`schema.prisma\` file.
                 }
             },
             mounted() {
-                if (this.fileSystem[0] && this.fileSystem[0].children) {
-                    const firstFile = this.fileSystem[0].children.find(c => c.type === 'file');
-                    this.selectedNode = firstFile || this.fileSystem[0];
-                }
-                
                 if (this.isDark) {
                     document.documentElement.classList.add('dark');
                 }
@@ -642,7 +1849,7 @@ When the user says "migrate the database" or modifies a \`schema.prisma\` file.
 
         app.component('file-tree-node', {
             name: 'FileTreeNode',
-            props: ['node', 'level', 'selectedId'],
+            props: ['node', 'level', 'selectedId', 'provider'],
             emits: ['select', 'hover'],
             data() {
                 return {
@@ -667,7 +1874,14 @@ When the user says "migrate the database" or modifies a \`schema.prisma\` file.
                         
                         <div class="mr-2 flex items-center justify-center">
                             <template v-if="node.type === 'folder'">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-orange-500 fill-orange-500/20"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" :class="['w-4 h-4', provider === 'gemini' ? 'text-blue-500' : (provider === 'cursor' ? 'text-slate-400' : (provider === 'copilot' ? 'text-indigo-400' : (provider === 'aider' ? 'text-emerald-500' : 'text-orange-500')))]">
+    <path v-if="provider === 'gemini'" d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81" fill="currentColor" />
+    <path v-else-if="provider === 'cursor'" d="M11.503.131 1.891 5.678a.84.84 0 0 0-.42.726v11.188c0 .3.162.575.42.724l9.609 5.55a1 1 0 0 0 .998 0l9.61-5.55a.84.84 0 0 0 .42-.724V6.404a.84.84 0 0 0-.42-.726L12.497.131a1.01 1.01 0 0 0-.996 0M2.657 6.338h18.55c.263 0 .43.287.297.515L12.23 22.918c-.062.107-.229.064-.229-.06V12.335a.59.59 0 0 0-.295-.51l-9.11-5.257c-.109-.063-.064-.23.061-.23" fill="currentColor" />
+    <path v-else-if="selectedProvider === 'copilot'" d="M23.922 16.997C23.061 18.492 18.063 22.02 12 22.02 5.937 22.02.939 18.492.078 16.997A.641.641 0 0 1 0 16.741v-2.869a.883.883 0 0 1 .053-.22c.372-.935 1.347-2.292 2.605-2.656.167-.429.414-1.055.644-1.517a10.098 10.098 0 0 1-.052-1.086c0-1.331.282-2.499 1.132-3.368.397-.406.89-.717 1.474-.952C7.255 2.937 9.248 1.98 11.978 1.98c2.731 0 4.767.957 6.166 2.093.584.235 1.077.546 1.474.952.85.869 1.132 2.037 1.132 3.368 0 .368-.014.733-.052 1.086.23.462.477 1.088.644 1.517 1.258.364 2.233 1.721 2.605 2.656a.841.841 0 0 1 .053.22v2.869a.641.641 0 0 1-.078.256Zm-11.75-5.992h-.344a4.359 4.359 0 0 1-.355.508c-.77.947-1.918 1.492-3.508 1.492-1.725 0-2.989-.359-3.782-1.259a2.137 2.137 0 0 1-.085-.104L4 11.746v6.585c1.435.779 4.514 2.179 8 2.179 3.486 0 6.565-1.4 8-2.179v-6.585l-.098-.104s-.033.045-.085.104c-.793.9-2.057 1.259-3.782 1.259-1.59 0-2.738-.545-3.508-1.492a4.359 4.359 0 0 1-.355-.508Zm2.328 3.25c.549 0 1 .451 1 1v2c0 .549-.451 1-1 1-.549 0-1-.451-1-1v-2c0-.549.451-1 1-1Zm-5 0c.549 0 1 .451 1 1v2c0 .549-.451 1-1 1-.549 0-1-.451-1-1v-2c0-.549.451-1 1-1Zm3.313-6.185c.136 1.057.403 1.913.878 2.497.442.544 1.134.938 2.344.938 1.573 0 2.292-.337 2.657-.751.384-.435.558-1.15.558-2.361 0-1.14-.243-1.847-.705-2.319-.477-.488-1.319-.862-2.824-1.025-1.487-.161-2.192.138-2.533.529-.269.307-.437.808-.438 1.578v.021c0 .265.021.562.063.893Zm-1.626 0c.042-.331.063-.628.063-.894v-.02c-.001-.77-.169-1.271-.438-1.578-.341-.391-1.046-.69-2.533-.529-1.505.163-2.347.537-2.824 1.025-.462.472-.705 1.179-.705 2.319 0 1.211.175 1.926.558 2.361.365.414 1.084.751 2.657.751 1.21 0 1.902-.394 2.344-.938.475-.584.742-1.44.878-2.497Z" fill="currentColor"/>
+    <path v-else-if="provider === 'copilot'" d="M23.922 16.997C23.061 18.492 18.063 22.02 12 22.02 5.937 22.02.939 18.492.078 16.997A.641.641 0 0 1 0 16.741v-2.869a.883.883 0 0 1 .053-.22c.372-.935 1.347-2.292 2.605-2.656.167-.429.414-1.055.644-1.517a10.098 10.098 0 0 1-.052-1.086c0-1.331.282-2.499 1.132-3.368.397-.406.89-.717 1.474-.952C7.255 2.937 9.248 1.98 11.978 1.98c2.731 0 4.767.957 6.166 2.093.584.235 1.077.546 1.474.952.85.869 1.132 2.037 1.132 3.368 0 .368-.014.733-.052 1.086.23.462.477 1.088.644 1.517 1.258.364 2.233 1.721 2.605 2.656a.841.841 0 0 1 .053.22v2.869a.641.641 0 0 1-.078.256Zm-11.75-5.992h-.344a4.359 4.359 0 0 1-.355.508c-.77.947-1.918 1.492-3.508 1.492-1.725 0-2.989-.359-3.782-1.259a2.137 2.137 0 0 1-.085-.104L4 11.746v6.585c1.435.779 4.514 2.179 8 2.179 3.486 0 6.565-1.4 8-2.179v-6.585l-.098-.104s-.033.045-.085.104c-.793.9-2.057 1.259-3.782 1.259-1.59 0-2.738-.545-3.508-1.492a4.359 4.359 0 0 1-.355-.508Zm2.328 3.25c.549 0 1 .451 1 1v2c0 .549-.451 1-1 1-.549 0-1-.451-1-1v-2c0-.549.451-1 1-1Zm-5 0c.549 0 1 .451 1 1v2c0 .549-.451 1-1 1-.549 0-1-.451-1-1v-2c0-.549.451-1 1-1Zm3.313-6.185c.136 1.057.403 1.913.878 2.497.442.544 1.134.938 2.344.938 1.573 0 2.292-.337 2.657-.751.384-.435.558-1.15.558-2.361 0-1.14-.243-1.847-.705-2.319-.477-.488-1.319-.862-2.824-1.025-1.487-.161-2.192.138-2.533.529-.269.307-.437.808-.438 1.578v.021c0 .265.021.562.063.893Zm-1.626 0c.042-.331.063-.628.063-.894v-.02c-.001-.77-.169-1.271-.438-1.578-.341-.391-1.046-.69-2.533-.529-1.505.163-2.347.537-2.824 1.025-.462.472-.705 1.179-.705 2.319 0 1.211.175 1.926.558 2.361.365.414 1.084.751 2.657.751 1.21 0 1.902-.394 2.344-.938.475-.584.742-1.44.878-2.497Z" fill="currentColor"/>
+    <path v-else-if="selectedProvider === 'aider' || provider === 'aider'" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V8h16v10zm-2-1h-6v-2h6v2zM6 10h2v2H6v-2zm0 4h2v2H6v-2zm4-4h2v2h-2v-2zm0 4h2v2h-2v-2z" fill="currentColor" />
+    <path v-else d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z" fill="currentColor" />
+</svg>
                             </template>
                             <template v-else>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :class="['w-4 h-4', selectedId === node.id ? 'text-accent-foreground' : 'text-slate-400']"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -688,6 +1902,7 @@ When the user says "migrate the database" or modifies a \`schema.prisma\` file.
                             :node="child" 
                             :level="level + 1" 
                             :selected-id="selectedId"
+                            :provider="provider"
                             @select="$emit('select', $event)"
                             @hover="$emit('hover', $event)"
                         />

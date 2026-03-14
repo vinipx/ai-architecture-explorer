@@ -1,43 +1,42 @@
-# Claude Architecture Explorer
+# AI Architecture Explorer
 
-An interactive, visual reference guide for the official `.claude/` directory architecture, built to help you master Claude Code's multi-level configuration system.
+An interactive, visual reference guide for the official directory architectures of leading AI coding agents (Claude Code, Gemini CLI, Cursor IDE, and GitHub Copilot). Built to help you master multi-level configuration systems, MDC (Markdown Configuration) files, and autonomous agent rules.
 
-**[View the Live Explorer Here](https://vinipx.github.io/claude-infra-setup/)** *(Assuming GitHub Pages is configured at this URL)*
+**[View the Live Explorer Here](https://vinipx.github.io/ai-architecture-explorer/)** *(Assuming GitHub Pages is configured at this URL)*
 
 ## Overview
-Claude Code orchestrates a powerful hierarchy of four memory levels, each with a specific scope and priority. When two levels contradict each other, Claude Code applies the most specific rule. 
+Modern AI coding assistants orchestrate powerful hierarchies of memory levels, rules, and scoped instructions. When you structure these configurations correctly, you can dramatically improve the output quality of your AI agents. 
 
-This repository provides a visual, interactive IDE-like interface (built in a single HTML file with Vue and Tailwind CSS) that allows you to click through both the global user-level and project-level directories. It explains what each file does, why it exists, and provides **Real World** templates following Anthropic's prompt engineering best practices (ruthless pruning, Markdown headings, and emphasis words).
-
----
-
-## The 4 Levels of Claude Configuration
-
-### Level 1: Global (Your Machine)
-**`~/.claude/CLAUDE.md`**
-Global preferences across ALL your projects. This is specific to your machine and not versioned. Configure your personal preferences here: communication style, preferred tools, and OS specifics.
-
-### Level 2: Auto-Memory
-**`~/.claude/projects/*/MEMORY.md`**
-Written by Claude itself! Unlike `CLAUDE.md` which you write manually, `MEMORY.md` is fed by the agent over the course of your sessions. It tracks discovered build commands, debugging insights, and active project context.
-
-### Level 3: Project
-**`your-project/CLAUDE.md`**
-The most strategic file. It lives at the root of your Git repository and is shared with the entire team via version control. Keep it ruthlessly pruned (80-200 lines max) and place core code conventions, project architecture, and primary build commands here.
-*Note: You can use `CLAUDE.local.md` (Level 3b) for gitignored personal overrides.*
-
-### Level 4: Modular Rules
-**`your-project/.claude/rules/*.md`**
-The highest priority files. Placed in `.claude/rules/`, these are automatically loaded alongside `CLAUDE.md`. This allows separation of concerns: one file for coding style, one for testing directives, one for Git workflows. When levels conflict, these specific rules win.
+This repository provides a visual, interactive IDE-like interface (built in a single HTML file with Vue and Tailwind CSS) that allows you to click through both the global user-level and project-level directories for **four major AI tools**. It explains what each file does, why it exists, and provides **Real World** templates following prompt engineering best practices.
 
 ---
 
-## Other Key Features Demonstrated
+## Supported AI Providers
 
-*   **Subdirectory Context (`frontend/CLAUDE.md`):** Subdirectory rules only load when Claude interacts with files in those specific folders. This prevents irrelevant backend context from bloating your frontend session.
-*   **On-Demand Knowledge (`docs/architecture.md`):** Store deep knowledge in the `docs/` folder. Instead of loading them every session, reference them on-demand by telling Claude to look at `@docs/architecture.md`.
-*   **Custom Skills (`.claude/skills/`):** Define modular custom tools (like safe DB migration wrappers) using a `SKILL.md` file with YAML frontmatter.
-*   **Specialized Agents (`.claude/agents/`):** Define an orchestrator and subagents to route complex tasks effectively. The orchestrator acts as a traffic cop, delegating deeply technical tasks to specialized subagents (like `frontend-expert.md`) to keep the main session history lean.
+### 🤖 Claude Code
+Master Anthropic's 4-level memory configuration hierarchy (`.claude/`):
+- **Global:** `~/.claude/CLAUDE.md`
+- **Auto-Memory:** `projects/*/MEMORY.md`
+- **Project:** `CLAUDE.md`
+- **Modular Rules:** `.claude/rules/*.md`
+
+### ✨ Gemini CLI
+Explore Google's robust context management (`.gemini/`):
+- Learn how to structure `GEMINI.md` alongside `.geminiignore`.
+- Configure `settings.json` and agent memory.
+- Set up autonomous skills, bash execution hooks, and orchestrator sub-agents.
+
+### 💻 Cursor IDE
+Visualize the modern **MDC (Markdown Cursor)** architecture:
+- Ditch legacy `.cursorrules` for the highly modular `.cursor/rules/*.mdc` system.
+- Understand YAML frontmatter (`alwaysApply` vs intelligent `globs`).
+- See examples of `000-project-context.mdc`, frontend patterns, and testing guidelines.
+
+### 🐙 GitHub Copilot
+Configure the native `.github/` folder to steer Copilot Chat and Workspace Agents:
+- Set up repository-wide instructions via `.github/copilot-instructions.md`.
+- See how to use path-scoped `applyTo` YAML files for specific directories.
+- Define autonomous operational limits using `AGENTS.md`.
 
 ---
 
@@ -55,4 +54,4 @@ If you want to view or modify the interactive explorer locally:
 ---
 
 ## Acknowledgments
-A special thank you to **Navdeep Singh Rathore** ([LinkedIn](https://www.linkedin.com/in/thenavdeeprathore/)), whose insights and original architectural breakdown inspired the creation of this interactive reference site.
+A special thank you to **Navdeep Singh Rathore** ([LinkedIn](https://www.linkedin.com/in/thenavdeeprathore/)), whose insights and original architectural breakdown inspired the creation of the interactive Claude reference, which has now evolved into this comprehensive multi-agent guide.
