@@ -1,57 +1,115 @@
-# AI Architecture Explorer
+<div align="center">
+  
+# 🧭 AI Architecture Explorer
 
-An interactive, visual reference guide for the official directory architectures of leading AI coding agents (Claude Code, Gemini CLI, Cursor IDE, and GitHub Copilot). Built to help you master multi-level configuration systems, MDC (Markdown Configuration) files, and autonomous agent rules.
+**Master the configuration, memory, and rule architectures of the world's leading AI coding assistants.**
 
-**[View the Live Explorer Here](https://vinipx.github.io/ai-architecture-explorer/)** *(Assuming GitHub Pages is configured at this URL)*
+[![Live Demo](https://img.shields.io/badge/Live_Explorer-Play_Now-000000?style=for-the-badge&logo=github&logoColor=white)](https://vinipx.github.io/claude-infra-setup/)
+[![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D)](https://vuejs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-## Overview
-Modern AI coding assistants orchestrate powerful hierarchies of memory levels, rules, and scoped instructions. When you structure these configurations correctly, you can dramatically improve the output quality of your AI agents. 
+<br>
+<img src="https://raw.githubusercontent.com/vinipx/claude-infra-setup/main/.github/preview.png" alt="AI Architecture Explorer Preview" width="800" style="border-radius: 8px; box-shadow: 0 4px 14px rgba(0,0,0,0.1);" onerror="this.style.display='none'">
+<br>
 
-This repository provides a visual, interactive IDE-like interface (built in a single HTML file with Vue and Tailwind CSS) that allows you to click through both the global user-level and project-level directories for **four major AI tools**. It explains what each file does, why it exists, and provides **Real World** templates following prompt engineering best practices.
+*A visual, interactive IDE-like interface to explore global and project-level `.dotfiles` across major AI ecosystems.*
+
+</div>
 
 ---
 
-## Supported AI Providers
+## 💡 Why This Exists
 
-### 🤖 Claude Code
-Master Anthropic's 4-level memory configuration hierarchy (`.claude/`):
-- **Global:** `~/.claude/CLAUDE.md`
-- **Auto-Memory:** `projects/*/MEMORY.md`
-- **Project:** `CLAUDE.md`
-- **Modular Rules:** `.claude/rules/*.md`
+Modern AI coding assistants (like Cursor, Claude Code, and Copilot) have evolved far beyond a simple chat box. They now orchestrate complex hierarchies of memory levels, scoped rules, and autonomous tools. 
 
-### ✨ Gemini CLI
-Explore Google's robust context management (`.gemini/`):
-- Learn how to structure `GEMINI.md` alongside `.geminiignore`.
-- Configure `settings.json` and agent memory.
-- Set up autonomous skills, bash execution hooks, and orchestrator sub-agents.
+**When you structure these configurations correctly, you dramatically improve the output quality, context awareness, and speed of your AI agents.**
 
-### 💻 Cursor IDE
+This repository provides an interactive explorer that lets you click through the official directory architectures of leading AI tools. It explains **what** each file does, **why** it exists, and provides **Real-World Templates** following prompt engineering best practices (ruthless pruning, Markdown headings, and emphasis words).
+
+---
+
+## 🚀 Providers Covered
+
+### 🤖 Claude Code (`.claude/`)
+Master Anthropic's 4-level memory configuration hierarchy:
+- **Global:** `~/.claude/CLAUDE.md` — Your personal developer persona.
+- **Auto-Memory:** `projects/*/MEMORY.md` — Context autonomously learned by the agent.
+- **Project:** `CLAUDE.md` — The strategic, version-controlled repository rules.
+- **Modular Rules:** `.claude/rules/*.md` — Domain-specific overrides (e.g., testing, styling).
+
+### 💻 Cursor IDE (`.cursor/`)
 Visualize the modern **MDC (Markdown Cursor)** architecture:
-- Ditch legacy `.cursorrules` for the highly modular `.cursor/rules/*.mdc` system.
-- Understand YAML frontmatter (`alwaysApply` vs intelligent `globs`).
-- See examples of `000-project-context.mdc`, frontend patterns, and testing guidelines.
+- Ditch the legacy `.cursorrules` monolith for the highly modular `.cursor/rules/*.mdc` system.
+- Understand how to leverage YAML frontmatter (`alwaysApply` vs intelligent `globs`).
+- Explore real-world examples of `000-project-context.mdc`, frontend UI patterns, and isolated testing guidelines.
 
-### 🐙 GitHub Copilot
+### ✨ Gemini CLI (`.gemini/`)
+Explore Google's robust context management and agent orchestration:
+- Learn how to safely structure `GEMINI.md` alongside `.geminiignore` to optimize token usage.
+- Configure `settings.json` and persist long-term agent memory.
+- Set up autonomous skills, shell execution hooks, and orchestrator sub-agents.
+
+### 🐙 GitHub Copilot (`.github/`)
 Configure the native `.github/` folder to steer Copilot Chat and Workspace Agents:
 - Set up repository-wide instructions via `.github/copilot-instructions.md`.
-- See how to use path-scoped `applyTo` YAML files for specific directories.
-- Define autonomous operational limits using `AGENTS.md`.
+- See how to use path-scoped `applyTo` YAML files for specific directories to prevent context bloat.
+- Define strict autonomous operational limits using `AGENTS.md`.
+
+### ⚡ Aider CLI (`.aider/`)
+Master the terminal-native pair programmer's configuration:
+- Setup `.aider.conf.yml` for environment styling, testing commands, and model selection.
+- Manage memory cache, repository maps, and auto-generated chat history (`.aider.chat.history.md`).
+- Define strict coding standards using `/read .aider.conventions.md`.
 
 ---
 
-## Local Development
+## 🛠️ Built With
 
-If you want to view or modify the interactive explorer locally:
+This entire explorer is built as a highly optimized, zero-build-step application:
+- **Single File Architecture:** The entire app logic, UI, and state are bundled in `index.html`.
+- **Vue 3 (CDN):** Reactive file-tree navigation and state management.
+- **Tailwind CSS (CDN):** Beautiful, modern dark/light mode UI.
+- **Lucide Icons:** Crisp, consistent iconography representing AI ecosystems.
 
-1. Clone the repository.
-2. Run the included convenience script to spin up a local server:
+---
+
+## 💻 Local Development
+
+Because the project has zero build steps, local development is incredibly simple.
+
+1. Clone the repository:
    ```bash
-   ./docs.sh
+   git clone https://github.com/vinipx/claude-infra-setup.git
+   cd claude-infra-setup
    ```
-3. Your browser will automatically open `http://localhost:8080/`.
+2. Simply double-click `index.html` to open it in your browser, or serve it using your preferred local server:
+   ```bash
+   # Using Python
+   python3 -m http.server 8080
+   
+   # Using Node.js
+   npx serve -p 8080
+   ```
+3. Open `http://localhost:8080/`
 
 ---
 
-## Acknowledgments
-A special thank you to **Navdeep Singh Rathore** ([LinkedIn](https://www.linkedin.com/in/thenavdeeprathore/)), whose insights and original architectural breakdown inspired the creation of the interactive Claude reference, which has now evolved into this comprehensive multi-agent guide.
+## 🤝 Contributing
+
+Found a new AI assistant with a complex rule architecture? Want to improve the existing templates? Contributions are highly welcome! 
+
+1. Fork the Project.
+2. Edit the `providersData` JSON arrays directly inside `index.html`.
+3. Open a Pull Request.
+
+---
+
+## 🙌 Acknowledgments
+
+A special thank you to **Navdeep Singh Rathore** ([LinkedIn](https://www.linkedin.com/in/thenavdeeprathore/)), whose insights and original architectural breakdown inspired the creation of the initial interactive Claude reference, which has now evolved into this comprehensive multi-agent guide.
+
+---
+<div align="center">
+  <i>If this repository helped you level up your AI coding workflows, consider giving it a ⭐!</i>
+</div>
