@@ -4,13 +4,13 @@
 
 **Master the configuration, memory, and rule architectures of the world's leading AI coding assistants.**
 
-[![Live Demo](https://img.shields.io/badge/Live_Explorer-Play_Now-000000?style=for-the-badge&logo=github&logoColor=white)](https://vinipx.github.io/claude-infra-setup/)
+[![Live Demo](https://img.shields.io/badge/Live_Explorer-Play_Now-000000?style=for-the-badge&logo=github&logoColor=white)](https://vinipx.github.io/ai-architecture-explorer/)
 [![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D)](https://vuejs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 <br>
-<img src="https://raw.githubusercontent.com/vinipx/claude-infra-setup/main/.github/preview.png" alt="AI Architecture Explorer Preview" width="800" style="border-radius: 8px; box-shadow: 0 4px 14px rgba(0,0,0,0.1);" onerror="this.style.display='none'">
+<img src="https://raw.githubusercontent.com/vinipx/ai-architecture-explorer/main/.github/preview.png" alt="AI Architecture Explorer Preview" width="800" style="border-radius: 8px; box-shadow: 0 4px 14px rgba(0,0,0,0.1);" onerror="this.style.display='none'">
 <br>
 
 *A visual, interactive IDE-like interface to explore global and project-level `.dotfiles` across major AI ecosystems.*
@@ -80,8 +80,8 @@ Because the project has zero build steps, local development is incredibly simple
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/vinipx/claude-infra-setup.git
-   cd claude-infra-setup
+   git clone https://github.com/vinipx/ai-architecture-explorer.git
+   cd ai-architecture-explorer
    ```
 2. Simply double-click `index.html` to open it in your browser, or serve it using your preferred local server:
    ```bash
