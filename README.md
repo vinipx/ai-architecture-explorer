@@ -10,7 +10,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 <br>
-👉 **[AI Architecture Explorer Preview](https://vinipx.github.io/ai-architecture-explorer/)**
+**[EXPLORE IT NOW](https://vinipx.github.io/ai-architecture-explorer/)**
 <br>
 
 *A visual, interactive IDE-like interface to explore global and project-level `.dotfiles` across major AI ecosystems.*
