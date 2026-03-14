@@ -4,7 +4,7 @@
 
 **Master the configuration, memory, and rule architectures of the world's leading AI coding assistants.**
 
-[![Live Demo](https://img.shields.io/badge/Live_Explorer-Play_Now-000000?style=for-the-badge&logo=github&logoColor=white)](https://vinipx.github.io/ai-architecture-explorer/)
+[![EXPLORE](https://img.shields.io/badge/EXPLORE-NOW-000000?style=for-the-badge&logo=github&logoColor=white)](https://vinipx.github.io/ai-architecture-explorer/)
 [![Vue.js](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vue.js&logoColor=4FC08D)](https://vuejs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
