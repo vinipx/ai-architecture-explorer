@@ -9,9 +9,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-<br>
-**[EXPLORE IT NOW](https://vinipx.github.io/ai-architecture-explorer/)**
-<br>
+[EXPLORE IT NOW!](https://vinipx.github.io/ai-architecture-explorer)
 
 *A visual, interactive IDE-like interface to explore global and project-level `.dotfiles` across major AI ecosystems.*
 
@@ -97,12 +95,6 @@ Found a new AI assistant with a complex rule architecture? Want to improve the e
 1. Fork the Project.
 2. Edit the `providersData` JSON arrays directly inside `index.html`.
 3. Open a Pull Request.
-
----
-
-## 🙌 Acknowledgments
-
-A special thank you to **Navdeep Singh Rathore** ([LinkedIn](https://www.linkedin.com/in/thenavdeeprathore/)), whose insights and original architectural breakdown inspired the creation of the initial interactive Claude reference, which has now evolved into this comprehensive multi-agent guide.
 
 ---
 <div align="center">
