@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-# docs.sh - Graceful script to serve the Claude Architecture diagram locally
+# docs.sh - Graceful script to serve the AI Architecture Explorer locally
 
 PORT=8080
 
-echo "✨ Starting local server for Claude Architecture Diagram..."
+echo "✨ Starting local server for AI Architecture Explorer..."
 echo "🌐 Serving on http://localhost:$PORT/"
 echo "Press Ctrl+C to stop the server."
 

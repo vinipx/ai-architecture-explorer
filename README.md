@@ -83,15 +83,10 @@ Because the project has zero build steps, local development is incredibly simple
    git clone https://github.com/vinipx/ai-architecture-explorer.git
    cd ai-architecture-explorer
    ```
-2. Simply double-click `index.html` to open it in your browser, or serve it using your preferred local server:
+2. Run the included convenience script to spin up a local server. It will automatically detect Python or Node.js and open the browser for you:
    ```bash
-   # Using Python
-   python3 -m http.server 8080
-   
-   # Using Node.js
-   npx serve -p 8080
+   ./docs.sh
    ```
-3. Open `http://localhost:8080/`
 
 ---
 
