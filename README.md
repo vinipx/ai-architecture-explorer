@@ -30,11 +30,14 @@ This repository provides an interactive explorer that lets you click through the
 ## 🚀 Providers Covered
 
 ### 🤖 Claude Code (`.claude/`)
-Master Anthropic's 4-level memory configuration hierarchy:
-- **Global:** `~/.claude/CLAUDE.md` — Your personal developer persona.
-- **Auto-Memory:** `projects/*/MEMORY.md` — Context autonomously learned by the agent.
-- **Project:** `CLAUDE.md` — The strategic, version-controlled repository rules.
-- **Modular Rules:** `.claude/rules/*.md` — Domain-specific overrides (e.g., testing, styling).
+Master Anthropic's real Claude Code file architecture:
+- **Global:** `~/.claude/CLAUDE.md` — Your personal developer persona (always included in system prompt).
+- **Auto-Memory:** `~/.claude/projects/<path-encoded>/memory/` — Persistent memory written by Claude itself across sessions.
+- **Project:** `CLAUDE.md` — The strategic, version-controlled project context (concatenated with global).
+- **Subdirectory:** `frontend/CLAUDE.md`, `backend/CLAUDE.md` — Lazy-loaded when working in those directories.
+- **Commands:** `.claude/commands/*.md` — Custom `/slash-commands` for reusable project workflows.
+- **Hooks:** `.claude/hooks/*.sh` + `settings.json` — Lifecycle scripts for PreToolUse, PostToolUse, Stop events.
+- **Settings:** `.claude/settings.json` — Tool permissions, environment variables, hook bindings.
 
 ### 💻 Cursor IDE (`.cursor/`)
 Visualize the modern **MDC (Markdown Cursor)** architecture:

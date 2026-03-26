@@ -1,0 +1,20 @@
+{
+  "allowedTools": ["Bash", "Read", "Write", "Edit", "Glob", "Grep"],
+  "env": {
+    "NODE_ENV": "development",
+    "API_BASE_URL": "http://localhost:3001"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/protect-main-branch.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

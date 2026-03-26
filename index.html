@@ -368,9 +368,9 @@
             type: "folder",
             info: {
               what: "Global machine-level configuration directory.",
-              why: "Stores your personal preferences and cross-project auto-memory.",
+              why: "Stores your personal preferences, global settings, and per-project session data.",
               how: "Located in your operating system's home directory.",
-              when: "Global settings are loaded first. Memory is loaded per project."
+              when: "CLAUDE.md is always included in the system prompt. Session data is stored per project."
             },
             children: [
               {
@@ -378,13 +378,26 @@
                 name: "CLAUDE.md",
                 badge: "Level 1: Global",
                 type: "file",
-                content: `# Personal Preferences\n- OS: macOS Sonoma\n- Shell: zsh with oh-my-zsh\n- Editor: Cursor\n\n# Communication Style\n- IMPORTANT: Skip pleasantries, apologies, and robotic confirmations.\n- If a command fails, automatically attempt to diagnose the error reading the stderr output before asking me what to do.\n- Keep explanations strictly technical.`,
+                content: `# Personal Preferences\n- OS: macOS Sonoma\n- Shell: zsh with oh-my-zsh\n- Editor: VS Code\n\n# Communication Style\n- IMPORTANT: Skip pleasantries, apologies, and robotic confirmations.\n- If a command fails, automatically attempt to diagnose the error reading the stderr output before asking me what to do.\n- Keep explanations strictly technical.`,
                 info: {
                   what: "Global preferences across ALL your projects.",
-                  why: "Sets your personal boundaries and environment facts globally. This is specific to your machine and not versioned.",
-                  how: "Use concise Markdown to list your preferences.",
-                  when: "Always applied to the system prompt across all projects.",
-                  priority: "Level 1 (Global): Lowest priority. This acts as the baseline but will be overridden by any conflicting rules in Level 2, 3, or 4."
+                  why: "Sets your personal developer persona globally. Machine-specific and never versioned.",
+                  how: "Use concise Markdown. All CLAUDE.md files (global, project, subdirectory) are concatenated — they add context, they don't strictly override each other.",
+                  when: "Always included in the system prompt across all projects.",
+                  priority: "Level 1 (Global): Baseline context. Project-level CLAUDE.md files add more specific context on top. More specific instructions naturally take precedence over general ones."
+                }
+              },
+              {
+                id: "user-settings-json",
+                name: "settings.json",
+                badge: "Config",
+                type: "file",
+                content: `{\n  "model": "sonnet",\n  "enabledPlugins": {}\n}`,
+                info: {
+                  what: "Global Claude Code settings.",
+                  why: "Sets your preferred model and plugin configuration globally across all projects.",
+                  how: "JSON file. Project-level .claude/settings.json overrides these global values.",
+                  when: "Loaded on every Claude Code session."
                 }
               },
               {
@@ -392,36 +405,99 @@
                 name: "projects",
                 type: "folder",
                 info: {
-                  what: "Directory for project-specific data managed globally.",
-                  why: "To store memory and auto-generated context without polluting the local repository.",
-                  how: "Contains folders named after project hashes.",
+                  what: "Directory for project-specific session data managed globally.",
+                  why: "Stores conversation history and persistent memory for each project without polluting the repository.",
+                  how: "Contains folders named with the project's full path, with / replaced by - (NOT a hash).",
                   when: "Accessed when working within the corresponding project."
                 },
                 children: [
                   {
                     id: "user-projects-hash",
-                    name: "<project-hash>",
+                    name: "<path-encoded>",
                     type: "folder",
                     info: {
-                      what: "A specific project's workspace data.",
-                      why: "To isolate memory between different codebases.",
-                      how: "Folder named with a unique hash of the project path.",
+                      what: "A specific project's workspace data folder.",
+                      why: "Isolates session history and memory between different codebases.",
+                      how: "⚠️ Named with the full project path, with / replaced by - (e.g. -Users-you-repos-myapp). This is NOT a hash — it's the literal path encoded. Each conversation session gets a UUID subdirectory.",
                       when: "When working in this specific project."
                     },
                     children: [
                       {
-                        id: "user-projects-memory-core",
-                        name: "MEMORY.md",
-                        badge: "Level 2: Auto-memory",
+                        id: "user-projects-session",
+                        name: "<session-uuid>",
+                        type: "folder",
+                        info: {
+                          what: "One conversation session's data.",
+                          why: "Each Claude Code conversation is stored separately for history and subagent data.",
+                          how: "UUID-named directory auto-created per conversation. Contains a subagents/ subfolder.",
+                          when: "Auto-created when a new conversation starts."
+                        },
+                        children: [
+                          {
+                            id: "user-projects-subagents",
+                            name: "subagents",
+                            type: "folder",
+                            info: {
+                              what: "Stores data for subagents spawned during this session.",
+                              why: "When Claude Code spawns subagents (e.g. via the Agent tool), their conversation data is stored here as separate JSONL files.",
+                              how: "Auto-managed by Claude Code. Each subagent gets its own agent-<id>.jsonl and agent-<id>.meta.json.",
+                              when: "Created automatically when subagents are used."
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        id: "user-projects-session-jsonl",
+                        name: "<session-uuid>.jsonl",
+                        badge: "Session History",
                         type: "file",
-                        content: `# Project State\n\n## Discovered Build Commands\n- Next.js requires \`pnpm run build\` before deploying.\n\n## Debugging Insights\n- The project uses Edge runtime on Vercel, so we cannot rely on Node.js specific crypto modules in middleware.\n\n## Active Context\n- Currently migrating authentication from legacy JWTs to NextAuth.js v5 (Auth.js).`,
-                        info: { 
-                          what: "Auto Memory file written by Claude itself.", 
-                          why: "Fed by the agent over the course of your sessions to remember build commands, debugging insights, and your preferences.", 
-                          how: "Managed automatically by Claude.", 
-                          when: "Always loaded when in the project.",
-                          priority: "Level 2 (Auto-Memory): Overrides global Level 1 settings, but is overridden by explicit project instructions (Levels 3 & 4)."
+                        content: `// Conversation history stored as JSONL (JSON Lines format).\n// Each line is one message turn in the conversation.\n// Auto-managed by Claude Code — do not edit manually.`,
+                        info: {
+                          what: "The conversation history for one session.",
+                          why: "Enables conversation resumption and provides the audit trail for what Claude did.",
+                          how: "Auto-created and managed by Claude Code per conversation. Sits alongside its session UUID directory.",
+                          when: "Written to throughout a conversation session."
                         }
+                      },
+                      {
+                        id: "user-projects-memory",
+                        name: "memory",
+                        type: "folder",
+                        info: {
+                          what: "Persistent memory directory maintained by Claude itself.",
+                          why: "Allows Claude to remember project-specific facts across separate conversation sessions.",
+                          how: "⚠️ This directory is NOT auto-created by Claude Code. Claude writes to it using its Write tool when instructed. It contains a MEMORY.md index and optional topic-specific .md files.",
+                          when: "Loaded into context when working in this project (if it exists)."
+                        },
+                        children: [
+                          {
+                            id: "user-projects-memory-core",
+                            name: "MEMORY.md",
+                            badge: "Level 2: Auto-memory",
+                            type: "file",
+                            content: `# Project Memory Index\n\n## Discovered Build Commands\n- Next.js requires \`pnpm run build\` before deploying.\n\n## Debugging Insights\n- The project uses Edge runtime on Vercel. Cannot use Node.js crypto modules in middleware.\n\n## Active Context\n- Currently migrating authentication from legacy JWTs to NextAuth.js v5 (Auth.js).\n\n## References\n- [tech-stack](tech-stack.md) — Full stack details\n- [decisions](decisions.md) — Key architectural decisions`,
+                            info: {
+                              what: "Index file for Claude's persistent memory. Written and maintained by Claude itself.",
+                              why: "Claude Code instructs Claude to maintain this as a memory system. It persists facts across sessions that would otherwise be lost.",
+                              how: "Claude writes to this file using its Write tool. It is a convention, not a system-created file. You can also edit it manually.",
+                              when: "Loaded into the system prompt when working in this project.",
+                              priority: "Level 2 (Auto-Memory): Project-specific context that persists across sessions. Sits above the global CLAUDE.md in specificity."
+                            }
+                          },
+                          {
+                            id: "user-projects-memory-topic",
+                            name: "tech-stack.md",
+                            badge: "Memory Topic",
+                            type: "file",
+                            content: `---\nname: tech-stack\ndescription: Full technology stack for Acme Corp Billing Dashboard\ntype: project\n---\n\n- Frontend: React 18, TypeScript, TailwindCSS, Vite\n- Backend: Node.js, Prisma, PostgreSQL on Supabase\n- Auth: NextAuth.js v5\n- Cache: Upstash Redis\n- Deploy: Vercel (Edge runtime for middleware)`,
+                            info: {
+                              what: "A topic-specific memory file.",
+                              why: "Splits large memory content into focused files, referenced from MEMORY.md.",
+                              how: "Claude creates these as needed using its Write tool. Each file covers one topic area.",
+                              when: "Loaded when referenced from MEMORY.md or when Claude reads the memory directory."
+                            }
+                          }
+                        ]
                       }
                     ]
                   }
@@ -435,7 +511,7 @@
             type: "folder",
             info: {
               what: "Project-level configuration directory.",
-              why: "Ensures everyone on the project shares the same AI rules.",
+              why: "Ensures everyone on the project shares the same AI context and rules.",
               how: "Created in the root of your project repository. Shared via version control.",
               when: "Automatically loaded by Claude whenever you are working inside this specific project workspace."
             },
@@ -445,27 +521,27 @@
                 name: "CLAUDE.md",
                 badge: "Level 3: Project",
                 type: "file",
-                content: `# Project Context\nThis is the "Acme Corp Billing Dashboard" frontend repository.\n- Primary stack: React 18, TypeScript, TailwindCSS, Vite.\n- Package Manager: pnpm (strictly enforced).\n\n# Code Conventions\n- We use functional components.\n- Never use default exports.\n\n# Build Commands\n- Dev: \`pnpm dev\`\n- Test: \`pnpm test\`\n- Build: \`pnpm build\``,
+                content: `# Project Context\nThis is the "Acme Corp Billing Dashboard" frontend repository.\n- Primary stack: React 18, TypeScript, TailwindCSS, Vite.\n- Package Manager: pnpm (strictly enforced).\n\n# Code Conventions\n- We use functional components.\n- Never use default exports.\n\n# Build Commands\n- Dev: \`pnpm dev\`\n- Test: \`pnpm test\`\n- Build: \`pnpm build\`\n\n# Additional Rules (imported on-demand)\n- Coding style: @.claude/rules/coding-style.md\n- Testing: @.claude/rules/testing.md`,
                 info: {
-                  what: "The most strategic file. Shared with the entire team.",
-                  why: "Place code conventions, project architecture, and build commands here.",
-                  how: "Keep it ruthlessly pruned and scannable. Target 80–200 lines max.",
-                  when: "Always available as the primary context layer.",
-                  priority: "Level 3 (Project): High priority. Overrides Level 1 and 2. Defines the shared baseline for the repository."
+                  what: "The primary project context file. Shared with the entire team via git.",
+                  why: "Place code conventions, project architecture, and build commands here. Use @ imports to reference supplementary rule files.",
+                  how: "Keep it ruthlessly pruned and scannable. Target 80–200 lines max. Use @filename to import other files into context.",
+                  when: "Always included as the primary project context layer.",
+                  priority: "Level 3 (Project): Core project context. All CLAUDE.md files (global → project → subdirectory) are concatenated. More specific instructions naturally win because they are more precisely worded."
                 }
               },
               {
                 id: "proj-claude-local-md",
                 name: "CLAUDE.local.md",
-                badge: "Level 3b: Overrides",
+                badge: "Level 3b: Personal",
                 type: "file",
                 content: `# Local Environment Overrides\n- Local DB path: \`/Users/dev/acme/db.sqlite\`\n- Dev server port is mapped to \`3001\` instead of \`3000\` on my machine.\n\n# Personal Workflow\n- Always run \`pnpm lint:fix\` before completing a task.`,
                 info: {
-                  what: "Personal project overrides.",
-                  why: "Used for instructions or personal environment variables that shouldn't be shared with the team.",
-                  how: "Add it to .gitignore.",
-                  when: "Loaded and overrides project-level CLAUDE.md rules.",
-                  priority: "Level 3b (Overrides): Higher priority than Level 3. Your personal rules here will override the shared project rules."
+                  what: "Personal project overrides — not shared with the team.",
+                  why: "Used for machine-specific paths, personal workflow preferences, or local environment details that shouldn't be committed.",
+                  how: "Add to .gitignore. Concatenated with CLAUDE.md when present.",
+                  when: "Loaded alongside project-level CLAUDE.md when present.",
+                  priority: "Level 3b (Personal): Adds personal context on top of the shared project CLAUDE.md. Because it is more specific, your personal instructions naturally take precedence."
                 }
               },
               {
@@ -473,139 +549,158 @@
                 name: ".claude",
                 type: "folder",
                 info: {
-                  what: "Internal configuration directory for specific rules.",
-                  why: "Allows separation of concerns for rules without bloating the root directory.",
-                  how: "Contains the `rules/` subfolder.",
-                  when: "Loaded automatically."
+                  what: "Claude Code configuration directory.",
+                  why: "Houses project settings, custom slash commands, lifecycle hooks, and optional supplementary rule files.",
+                  how: "Create at the project root. settings.json and commands/ are the most impactful contents.",
+                  when: "Settings loaded on session start. Commands available as /command-name. Hooks fire on configured events."
                 },
                 children: [
+                  {
+                    id: "proj-settings-json",
+                    name: "settings.json",
+                    badge: "Config",
+                    type: "file",
+                    content: `{\n  "allowedTools": ["Bash", "Read", "Write", "Edit", "Glob", "Grep"],\n  "env": {\n    "NODE_ENV": "development",\n    "API_BASE_URL": "http://localhost:3001"\n  },\n  "hooks": {\n    "PreToolUse": [\n      {\n        "matcher": "Bash",\n        "hooks": [\n          {\n            "type": "command",\n            "command": ".claude/hooks/protect-main-branch.sh"\n          }\n        ]\n      }\n    ],\n    "Stop": [\n      {\n        "hooks": [\n          {\n            "type": "command",\n            "command": ".claude/hooks/notify-done.sh"\n          }\n        ]\n      }\n    ]\n  }\n}`,
+                    info: {
+                      what: "Project-level Claude Code configuration.",
+                      why: "Controls which tools Claude can use, sets environment variables for the session, and wires up lifecycle hooks.",
+                      how: "JSON file. Keys: allowedTools/blockedTools (tool permissions), env (environment variables injected into the shell), hooks (event → script mappings).",
+                      when: "Loaded on session start. Overrides global ~/.claude/settings.json."
+                    }
+                  },
+                  {
+                    id: "proj-settings-local-json",
+                    name: "settings.local.json",
+                    badge: "Local Config",
+                    type: "file",
+                    content: `{\n  "env": {\n    "DATABASE_URL": "postgresql://localhost:5432/acme_dev"\n  }\n}`,
+                    info: {
+                      what: "Personal local settings overrides.",
+                      why: "Stores machine-specific config (like local DB URLs) that should not be committed.",
+                      how: "Same format as settings.json. Add to .gitignore.",
+                      when: "Merged with settings.json on session start."
+                    }
+                  },
+                  {
+                    id: "proj-commands",
+                    name: "commands",
+                    type: "folder",
+                    info: {
+                      what: "Custom slash commands for this project.",
+                      why: "Automate repetitive multi-step workflows into a single reusable /command.",
+                      how: "Each .md file becomes /filename as a slash command. Use $ARGUMENTS to accept user input. These are real Claude Code features — the filename is the command name.",
+                      when: "Available in Claude Code prompt by typing /command-name."
+                    },
+                    children: [
+                      {
+                        id: "proj-commands-commit",
+                        name: "commit.md",
+                        badge: "Slash Command",
+                        type: "file",
+                        content: `# Commit Workflow\n\nAnalyze all staged and unstaged changes, then:\n1. Run \`pnpm lint:fix\` to auto-fix lint issues.\n2. Show a diff summary and propose a commit message following Conventional Commits.\n3. Wait for confirmation, then create the commit.\n\n$ARGUMENTS`,
+                        info: {
+                          what: "A custom /commit slash command.",
+                          why: "Standardizes commit quality across the team. No YAML frontmatter needed — just markdown instructions.",
+                          how: "Type /commit in the Claude Code prompt. Optionally pass arguments after the command (e.g. /commit fix auth bug). $ARGUMENTS is replaced with whatever the user types.",
+                          when: "On demand by typing /commit."
+                        }
+                      },
+                      {
+                        id: "proj-commands-review",
+                        name: "review.md",
+                        badge: "Slash Command",
+                        type: "file",
+                        content: `# Code Review\n\nReview the code for: $ARGUMENTS\n\nCheck for:\n1. Logic correctness and edge cases.\n2. Security vulnerabilities (XSS, injection, hardcoded secrets).\n3. Performance anti-patterns.\n4. Missing test coverage.\n\nFormat: Summary → Issues (with file:line) → Suggestions.`,
+                        info: {
+                          what: "A custom /review slash command.",
+                          why: "Ensures every review follows a consistent, thorough checklist.",
+                          how: "Type /review <file-or-description>. The $ARGUMENTS placeholder is replaced with whatever follows /review.",
+                          when: "On demand by typing /review."
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    id: "proj-hooks",
+                    name: "hooks",
+                    type: "folder",
+                    info: {
+                      what: "Lifecycle hook scripts for Claude Code events.",
+                      why: "Automate safety checks and notifications before/after Claude uses tools.",
+                      how: "Shell scripts configured in settings.json under the 'hooks' key. Tool input arrives on stdin as JSON. Exit code 2 blocks the action; exit code 0 allows it.",
+                      when: "Fired automatically on PreToolUse, PostToolUse, PreCompact, PostCompact, or Stop events."
+                    },
+                    children: [
+                      {
+                        id: "proj-hooks-protect",
+                        name: "protect-main-branch.sh",
+                        badge: "PreToolUse Hook",
+                        type: "file",
+                        content: `#!/bin/bash\n# Hook: PreToolUse — Bash tool\n# Blocks destructive git commands on main/master.\n\nINPUT=$(cat)  # Tool input arrives as JSON on stdin\nCMD=$(echo "$INPUT" | jq -r '.command // ""')\n\nif echo "$CMD" | grep -qE "git push.*--force|git reset --hard|git clean -f"; then\n  echo "BLOCKED: Destructive git command detected. Run manually if intentional." >&2\n  exit 2  # Exit code 2 = block the tool call\nfi\n\nexit 0  # Allow`,
+                        info: {
+                          what: "A PreToolUse hook that blocks destructive git commands.",
+                          why: "Prevents Claude from accidentally force-pushing or hard-resetting without explicit user intent.",
+                          how: "Receives the Bash tool's input as JSON on stdin. Parse with jq to inspect the command. Exit 2 to block, exit 0 to allow.",
+                          when: "Fires before every Bash tool call, as configured in settings.json."
+                        }
+                      },
+                      {
+                        id: "proj-hooks-notify",
+                        name: "notify-done.sh",
+                        badge: "Stop Hook",
+                        type: "file",
+                        content: `#!/bin/bash\n# Hook: Stop — fires when Claude finishes its turn\n# Plays a system notification sound on macOS.\n\nafplay /System/Library/Sounds/Glass.aiff 2>/dev/null || true`,
+                        info: {
+                          what: "A Stop hook that notifies you when Claude finishes.",
+                          why: "Useful for long-running tasks — you can step away and be alerted when Claude is done.",
+                          how: "Fires when Claude's turn ends (the Stop event). Configure in settings.json under hooks.Stop.",
+                          when: "Every time Claude completes its response."
+                        }
+                      }
+                    ]
+                  },
                   {
                     id: "proj-rules",
                     name: "rules",
                     type: "folder",
                     info: {
-                      what: "Directory for Modular rules.",
-                      why: "To keep CLAUDE.md ruthlessly pruned by moving specific concerns into separate files.",
-                      how: "Add Markdown files containing specific instructions.",
-                      when: "Automatically loaded alongside CLAUDE.md."
+                      what: "Optional directory for supplementary rule files.",
+                      why: "Keeps CLAUDE.md scannable by moving detailed domain rules into separate files.",
+                      how: "⚠️ NOT auto-loaded by Claude Code. Files here are inert unless explicitly @-imported inside CLAUDE.md: add `@.claude/rules/coding-style.md` to your CLAUDE.md to activate them.",
+                      when: "Only active when referenced via @ import in CLAUDE.md or CLAUDE.local.md."
                     },
                     children: [
                       {
                         id: "proj-rules-coding-style",
                         name: "coding-style.md",
-                        badge: "Level 4: Modular",
+                        badge: "Requires @import",
                         type: "file",
                         content: `# Coding Style\n1. ALWAYS use functional components with \`React.FC\`.\n2. State management MUST use Zustand, never Redux.\n3. CSS is handled via Tailwind. Do not create \`.css\` files unless strictly necessary.\n\n# Good Example\n\`\`\`tsx\nexport const Button = ({ label }: { label: string }) => {\n  return <button className="bg-blue-500 px-4 py-2">{label}</button>\n};\n\`\`\``,
-                        info: { what: "Modular rule for coding style.", why: "Separates code styling from general project architecture.", how: "Short, scannable markdown.", when: "Automatically loaded.", priority: "Level 4 (Modular): HIGHEST PRIORITY. Rules defined here override all broader configurations (Levels 1-3). When levels conflict, the most specific rule wins." }
+                        info: { what: "Supplementary coding style rules.", why: "Keeps CLAUDE.md lean while preserving detailed style guidance.", how: "Add `@.claude/rules/coding-style.md` to your CLAUDE.md to include this file in context. Without that import, this file does nothing.", when: "Only when @-imported in CLAUDE.md." }
                       },
                       {
                         id: "proj-rules-testing",
                         name: "testing.md",
-                        badge: "Level 4: Modular",
+                        badge: "Requires @import",
                         type: "file",
                         content: `# Testing Directives\n1. YOU MUST ensure all new hooks have a corresponding \`.test.ts\` file.\n2. NEVER use snapshots unless testing complex SVG outputs.\n3. Mock all external API calls using MSW (Mock Service Worker).`,
-                        info: { what: "Modular rule for testing.", why: "Ensures AI writes tests that pass CI/CD.", how: "Short, scannable markdown.", when: "Automatically loaded.", priority: "Level 4 (Modular): HIGHEST PRIORITY. Rules defined here override all broader configurations (Levels 1-3). When levels conflict, the most specific rule wins." }
+                        info: { what: "Supplementary testing rules.", why: "Ensures AI writes tests that pass CI/CD.", how: "Add `@.claude/rules/testing.md` to your CLAUDE.md to activate.", when: "Only when @-imported in CLAUDE.md." }
                       },
                       {
                         id: "proj-rules-git",
                         name: "git-workflow.md",
-                        badge: "Level 4: Modular",
+                        badge: "Requires @import",
                         type: "file",
                         content: `# Git Workflow\n- IMPORTANT: Branch names MUST follow the pattern \`feature/ticket-ID-description\`.\n- Commit messages MUST use Conventional Commits.\n- NEVER push directly to \`main\`.`,
-                        info: { what: "Modular rule for Git operations.", why: "Guides Claude when executing git commands or writing commit messages.", how: "Short markdown list.", when: "Automatically loaded.", priority: "Level 4 (Modular): HIGHEST PRIORITY. Rules defined here override all broader configurations (Levels 1-3). When levels conflict, the most specific rule wins." }
+                        info: { what: "Supplementary git workflow rules.", why: "Guides Claude when executing git commands or writing commit messages.", how: "Add `@.claude/rules/git-workflow.md` to your CLAUDE.md to activate.", when: "Only when @-imported in CLAUDE.md." }
                       },
                       {
                         id: "proj-rules-security",
                         name: "security.md",
-                        badge: "Level 4: Modular",
+                        badge: "Requires @import",
                         type: "file",
                         content: `# Security Mandates\n- IMPORTANT: NEVER hardcode API keys or secrets in source files.\n- ALWAYS use \`process.env\` to reference secrets.\n- Sanitize all user inputs before rendering to prevent XSS.`,
-                        info: { what: "Modular rule for security.", why: "Enforces strict security protocols.", how: "Use strong emphasis words like NEVER and ALWAYS.", when: "Automatically loaded.", priority: "Level 4 (Modular): HIGHEST PRIORITY. Rules defined here override all broader configurations (Levels 1-3). When levels conflict, the most specific rule wins." }
-                      }
-                    ]
-                  },
-                  {
-                    id: "proj-skills",
-                    name: "skills",
-                    type: "folder",
-                    info: {
-                      what: "Directory for custom capabilities and tools.",
-                      why: "To give Claude custom tools to interact with your specific environment or build system.",
-                      how: "Organized in subfolders per skill.",
-                      when: "Loaded and executed ONLY when Claude determines the skill is needed."
-                    },
-                    children: [
-                      {
-                        id: "proj-skills-db",
-                        name: "db-migration",
-                        type: "folder",
-                        info: { what: "A real-world skill for database migrations.", why: "Allows Claude to run prisma migrations autonomously.", how: "Follows the SKILL.md specification.", when: "On demand." },
-                        children: [
-                          {
-                            id: "proj-skills-db-skill",
-                            name: "SKILL.md",
-                            badge: "Tool",
-                            type: "file",
-                            content: `---
-name: db-migration
-description: Safely generates and applies Prisma database migrations. Use this when the user asks to update the database schema.
----
-
-# Trigger
-When the user says "migrate the database" or modifies a \`schema.prisma\` file.
-
-# Execution Steps
-1. Validate the schema formatting by running \`pnpm prisma format\`.
-2. Generate the migration by running \`scripts/generate-migration.sh <migration_name>\`.
-3. Read the generated SQL file and explain what will change to the user.`,
-                            info: { what: "The primary skill definition.", why: "Instructs Claude on what the tool does and exactly what steps to take. Uses YAML frontmatter as required for tools.", how: "Markdown file defining triggers.", when: "Read when matching user intent." }
-                          },
-                          {
-                            id: "proj-skills-db-scripts",
-                            name: "scripts",
-                            type: "folder",
-                            info: { what: "Executable scripts for the skill.", why: "To perform complex or multi-step shell operations reliably.", how: "Bash, Python, or Node scripts.", when: "Executed by Claude during skill use." },
-                            children: [
-                              {
-                                id: "proj-skills-db-helper",
-                                name: "generate-migration.sh",
-                                badge: "Executable",
-                                type: "file",
-                                content: `#!/bin/bash\n# Real world migration wrapper script\nMIGRATION_NAME=$1\n\nif [ -z "$MIGRATION_NAME" ]; then\n  echo "Error: Migration name required."\n  exit 1\nfi\n\necho "Running prisma migrate dev..."\npnpm prisma migrate dev --name "$MIGRATION_NAME"`,
-                                info: { what: "An executable bash script.", why: "Encapsulates automation logic securely.", how: "Executed via shell command.", when: "During skill execution." }
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    id: "proj-agents",
-                    name: "agents",
-                    type: "folder",
-                    info: {
-                      what: "Specialized AI roles and orchestrators.",
-                      why: "To route complex tasks correctly or focus Claude's context on deep-dive expertise without polluting the general system prompt.",
-                      how: "Markdown files defining the persona and workflows.",
-                      when: "When explicitly activated or routed to by the orchestrator."
-                    },
-                    children: [
-                      {
-                        id: "proj-agents-orchestrator",
-                        name: "orchestrator.md",
-                        badge: "Real World",
-                        type: "file",
-                        content: `# Role\nYou are the primary orchestrator agent for the Acme Corp project. Your job is to analyze the user's request and delegate to the appropriate specialized subagent.\n\n# Available Subagents\n- \`frontend-expert\`: Use for any React, Tailwind, or Vite tasks.\n- \`database-expert\`: Use for Prisma or Postgres tasks.\n\n# Instructions\n- IMPORTANT: NEVER attempt to write code yourself.\n- ALWAYS delegate using the appropriate tool or subagent call.\n- Once the subagent finishes, synthesize their response for the user.`,
-                        info: { what: "An orchestrator agent prompt.", why: "Orchestrators keep the main session history lean by delegating repetitive or highly specialized tasks. They act as strategic traffic cops.", how: "Set as the default entry agent if applicable.", when: "On general session start or explicit invocation." }
-                      },
-                      {
-                        id: "proj-agents-frontend",
-                        name: "frontend-expert.md",
-                        badge: "Real World",
-                        type: "file",
-                        content: `# Persona\nYou are an elite Staff-level Frontend Engineer specializing in Web Performance, Accessibility (a11y), and React 18 concurrent features.\n\n# Core Directives\n- NEVER suggest solutions that degrade Lighthouse performance scores.\n- ALWAYS include \`aria-labels\` for interactive elements.\n- When reviewing PRs, act as a strict but highly educational mentor.\n\n# Response Format\nYour responses MUST follow this exact structure:\n1. **Analysis:** A brief thought process analyzing the code.\n2. **Refactored Code:** The exact, drop-in ready code replacement.\n3. **Explanation:** A concise bulleted list of why you made these choices.`,
-                        info: { what: "A highly specialized Agent persona.", why: "Using specific personas guarantees predictable, expert-level outputs for specific domains.", how: "Activated on demand by the user or orchestrator.", when: "On agent activation." }
+                        info: { what: "Supplementary security rules.", why: "Enforces strict security protocols.", how: "Add `@.claude/rules/security.md` to your CLAUDE.md to activate.", when: "Only when @-imported in CLAUDE.md." }
                       }
                     ]
                   }
@@ -616,27 +711,27 @@ When the user says "migrate the database" or modifies a \`schema.prisma\` file.
                 name: "docs",
                 type: "folder",
                 info: {
-                  what: "Knowledge base directory.",
-                  why: "To store knowledge that shouldn't bloat the session context globally.",
-                  how: "Write markdown files and reference them on-demand with `@docs/filename.md`.",
-                  when: "Loaded ONLY when referenced on-demand by you or the AI."
+                  what: "Convention: an on-demand knowledge base directory.",
+                  why: "To store deep reference material that is too verbose to always include in context.",
+                  how: "Write markdown files here, then reference them on-demand using the @ syntax: `@docs/architecture.md`. This is a user convention — Claude Code has no special awareness of a docs/ directory specifically.",
+                  when: "Loaded ONLY when explicitly referenced with @ by you or Claude."
                 },
                 children: [
                   {
                     id: "proj-docs-architecture",
                     name: "architecture.md",
-                    badge: "On-demand",
+                    badge: "On-demand (@)",
                     type: "file",
                     content: `# System Architecture\n\n## Backend Services\n- Authentication: NextAuth.js\n- Database: PostgreSQL hosted on Supabase\n- Cache: Upstash Redis\n\n## State Management\nWe use React Query for server state and Zustand for local client state.`,
-                    info: { what: "Deep architectural knowledge.", why: "Too specific to load every session, but useful when building new features.", how: "Reference via @docs/architecture.md", when: "On-demand." }
+                    info: { what: "Deep architectural knowledge.", why: "Too specific to load every session, but essential when building new features.", how: "Reference via @docs/architecture.md in your prompt or CLAUDE.md. The @ syntax works for any file path, not just docs/.", when: "On-demand only." }
                   },
                   {
                     id: "proj-docs-api",
                     name: "api-patterns.md",
-                    badge: "On-demand",
+                    badge: "On-demand (@)",
                     type: "file",
                     content: `# API Patterns\n\n## Checklist for new endpoints\n- [ ] Validated input using Zod.\n- [ ] Wrapped in error handler middleware.\n- [ ] Returns \`{ data: ... }\` envelope on success.`,
-                    info: { what: "Pattern reference and checklists.", why: "You can use markdown's checkboxes [ ] to keep track of what's done.", how: "Reference via @docs/api-patterns.md", when: "On-demand." }
+                    info: { what: "Pattern reference and checklists.", why: "You can use markdown checkboxes [ ] to track what's done.", how: "Reference via @docs/api-patterns.md. Claude can also check boxes as it works.", when: "On-demand only." }
                   }
                 ]
               },
@@ -652,11 +747,11 @@ When the user says "migrate the database" or modifies a \`schema.prisma\` file.
                     badge: "Lazy Loaded",
                     type: "file",
                     content: `# Frontend Specifics\n- We use \`next/image\` for all images.\n- Tailwind is the only permitted styling solution.\n- All components must be exported from \`src/components/index.ts\`.`,
-                    info: { 
-                      what: "Subdirectory CLAUDE.md", 
-                      why: "Prevents irrelevant context from bloating your session. Siblings never load (backend/CLAUDE.md won't load here).", 
-                      how: "Place in the subdirectory root.", 
-                      when: "Only loads when you interact with files in this subdirectory." 
+                    info: {
+                      what: "Subdirectory CLAUDE.md — loaded only when working in this directory.",
+                      why: "Prevents irrelevant context from bloating your session. Sibling directories do not load (backend/CLAUDE.md won't load here).",
+                      how: "Place in the subdirectory root. Claude Code auto-includes it when you interact with files in this subdirectory.",
+                      when: "Only loads when you interact with files inside frontend/."
                     }
                   }
                 ]
@@ -673,11 +768,11 @@ When the user says "migrate the database" or modifies a \`schema.prisma\` file.
                     badge: "Lazy Loaded",
                     type: "file",
                     content: `# Backend Specifics\n- Database ORM: Prisma.\n- NEVER bypass the Prisma client for DB operations.\n- All routes must be protected by the \`requireAuth\` middleware.`,
-                    info: { 
-                      what: "Subdirectory CLAUDE.md", 
-                      why: "Prevents irrelevant context from bloating your session.", 
-                      how: "Place in the subdirectory root.", 
-                      when: "Only loads when you interact with files in this subdirectory." 
+                    info: {
+                      what: "Subdirectory CLAUDE.md — loaded only when working in this directory.",
+                      why: "Prevents irrelevant context from bloating your session.",
+                      how: "Place in the subdirectory root.",
+                      when: "Only loads when you interact with files inside backend/."
                     }
                   }
                 ]
@@ -694,11 +789,11 @@ When the user says "migrate the database" or modifies a \`schema.prisma\` file.
                     badge: "Lazy Loaded",
                     type: "file",
                     content: `# API Contract Rules\n- Always update the OpenAPI spec when adding new endpoints.\n- Use HTTP status code 422 for validation errors.`,
-                    info: { 
-                      what: "Subdirectory CLAUDE.md", 
-                      why: "Prevents irrelevant context from bloating your session.", 
-                      how: "Place in the subdirectory root.", 
-                      when: "Only loads when you interact with files in this subdirectory." 
+                    info: {
+                      what: "Subdirectory CLAUDE.md — loaded only when working in this directory.",
+                      why: "Prevents irrelevant context from bloating your session.",
+                      how: "Place in the subdirectory root.",
+                      when: "Only loads when you interact with files inside api/."
                     }
                   }
                 ]
